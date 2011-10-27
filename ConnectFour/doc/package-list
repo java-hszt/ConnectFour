@@ -1,0 +1,5 @@
+ch.hszt.connectfour.control
+ch.hszt.connectfour.exception
+ch.hszt.connectfour.model.enumeration
+ch.hszt.connectfour.model.game
+ch.hszt.connectfour.model.gui

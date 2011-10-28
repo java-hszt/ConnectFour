@@ -4,9 +4,9 @@ package ch.hszt.connectfour.model.game;
 import ch.hszt.connectfour.model.enumeration.DropColor;
 import ch.hszt.connectfour.model.enumeration.SkillLevel;
 /**
+ * Abstract class for any player participating at a game.
  * @author Markus Vetsch
  * @version 1.0, 11.10.2011
- * Abstract class for any player participating at a game.
  */
 public abstract class Player 
 {

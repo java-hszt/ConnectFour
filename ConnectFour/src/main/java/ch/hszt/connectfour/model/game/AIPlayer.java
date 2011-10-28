@@ -7,12 +7,14 @@ import ch.hszt.connectfour.model.enumeration.DropColor;
 import ch.hszt.connectfour.model.enumeration.SkillLevel;
 
 /**
- * Represents an artificial intelligence (=AI) {@link Player}.
+ * Represents an artificial intelligence (= AI) {@link Player}.
  * @author Markus Vetsch
  * @version 1.0, 11.10.2011
  */
 public class AIPlayer extends Player
 {
+	//TODO: Turn this to abstract => various implementation for different skill levels?
+	
   	/**
    	* Initializes important members of the player instance - to be called via concrete subclasses.
    	* @param name - the name of the {@link Player}.

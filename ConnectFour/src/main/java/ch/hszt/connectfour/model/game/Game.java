@@ -10,9 +10,10 @@ import ch.hszt.connectfour.model.board.GameBoardSlot;
 import ch.hszt.connectfour.model.enumeration.DropColor;
 
 /**
+ * Represents the abstract definition of a game.
+ * Implements {@link Observable} to offer observers notifications about changes on an instance.
  * @author Markus Vetsch
- * @version 1.0, 11.10.2011
- * Represents an the definition of a game.
+ * @version 1.0, 11.10.2011 
  */
 public class Game extends Observable
 {

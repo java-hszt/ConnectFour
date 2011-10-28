@@ -55,9 +55,11 @@ public class UnitTestUtils
 		}
 
 		public void executeTurn(Game game, String column) throws GameException
-		{			
+		{
+			Player current = game.getStatus().getCurrentPlayer();
+			
 			super.executeTurn(game, column);
-			System.out.println("Drop inserted in column " + column + " !!!");
+			System.out.println(String.format("Drop of color %1$s inserted in column %2$s !!!", current.getColor(), column));
 		}
 		
 		public void printMessage(String message)

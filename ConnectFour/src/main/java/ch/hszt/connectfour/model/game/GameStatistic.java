@@ -98,7 +98,7 @@ public class GameStatistic
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(duration);
 		seconds = (minutes == 0) ? seconds : seconds - (60 * minutes);
 		
-		return String.format("%1$+2d:%2$+2d:%3$+2d", hours, minutes, seconds);
+		return String.format("%1$02d:%2$02d:%3$02d", hours, minutes, seconds);
 	}
 	
 	/**

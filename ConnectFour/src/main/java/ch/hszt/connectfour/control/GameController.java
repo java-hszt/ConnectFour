@@ -16,6 +16,10 @@ import ch.hszt.connectfour.model.game.GameStatus;
  */
 public abstract class GameController
 {
+	// These methods fulfill general communication from user interface to the model
+	// such as (starting, stopping, restarting game, execution of single turn) and thus aren't declared abstract.
+	// Nevertheless, feel free to override the methods for additional logic to be accomplished.
+	
 	/**
 	 * Starts the specified {@link Game}.
 	 * @param game - The {@link Game} to be started.
@@ -59,9 +63,17 @@ public abstract class GameController
 	
 	/**
 	 * Refreshes all relevant information for specified {@link Game}.
-	 * @param game
+	 * @param game - The {@link Game} to refresh all relevant information such as {@link GameStatistic} and {@link GameStatus}.
 	 */
-	public abstract void refreshAll(Game game);
+	public void refreshAll(Game game)
+	{
+		refreshStatus(game.getStatus());
+		refreshStatistic(game.getStatistic());
+	}
+	
+	// These methods define communication from the model to the user interface
+	// and shall be implemented depending on the realization of the user interface.
+	// That's why they're declared abstract
 	
 	/**
 	 * Refreshes the specified {@link GameStatus}.

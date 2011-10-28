@@ -89,7 +89,7 @@ public class GameEngine
 	 * @param slot - The {@link GameBoardSlot}, that was updated.
 	 */
 	public synchronized void updateGame(Game game, GameBoardSlot slot)
-	{
+	{		
 		GameStatus.update(game);
 		game.notifyChanged(slot);
 	}

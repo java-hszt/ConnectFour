@@ -36,7 +36,7 @@ public class GameBoardRow extends GameBoardLine
 	public String toString()
 	{
 		return String.format("GameBoardRow [%1$s-%2$s]",
-							slots[0].getKey(), slots[GameBoard.NUMBER_OF_COLUMNS - 1]);
+							slots[0].getKey(), slots[GameBoard.NUMBER_OF_COLUMNS - 1].getKey());
 	}
 
 	/* (non-Javadoc)

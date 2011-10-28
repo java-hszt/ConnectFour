@@ -67,6 +67,6 @@ public class GameObserver implements Observer
 			// refresh everything in any case
 			
 			controller.refreshAll(game);
-		}
+		}		
 	}
 }

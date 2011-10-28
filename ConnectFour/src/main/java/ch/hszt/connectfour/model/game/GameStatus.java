@@ -48,7 +48,7 @@ public class GameStatus
 	 */
 	public static void update(Game game)
 	{
-		game.setStatus(new GameStatus(game));
+		game.setStatus(new GameStatus(game));	
 	}	
 	
 	/**
@@ -148,6 +148,20 @@ public class GameStatus
 	{
 		GameBoard board = game.getBoard();
 		
+		// Update all relevant information of the game
+		
+		updateAll(game);
+		
+		if (isConnectFour)
+		{
+			winnerSlots = connectFour.getConnectFourList();
+		}
+	}
+	
+	private void updateAll(Game game)
+	{
+		GameBoard board = game.getBoard();
+		
 		// Check for connect four
 		
 		isConnectFour = checkIsConnectFour(board);
@@ -162,11 +176,6 @@ public class GameStatus
 		// Evaluate current player
 		
 		currentPlayer = evaluateCurrentPlayer(game);
-		
-		if (isConnectFour)
-		{
-			winnerSlots = cleanRedundantDrops();
-		}
 	}
 
 	private boolean checkIsConnectFour(GameBoard board) 
@@ -180,9 +189,8 @@ public class GameStatus
 				connectFour = coll;
 				winnerColor = DropColor.RED;
 				return true;
-			}
-			
-			if (coll.hasConnectFour(DropColor.YELLOW))
+			}			
+			else if (coll.hasConnectFour(DropColor.YELLOW))
 			{
 				connectFour = coll;
 				winnerColor = DropColor.YELLOW;
@@ -247,46 +255,6 @@ public class GameStatus
 		return dropCount;
   	}
 
-  	private List<GameBoardSlot> cleanRedundantDrops() 
-  	{
-		if (connectFour != null)
-		{
-			List<GameBoardSlot> winnerSlots = connectFour.asList();
-			
-			int slotCounter = 0;
-			
-			while (slotCounter < winnerSlots.size())
-			{
-				GameBoardSlot current = winnerSlots.get(slotCounter);
-				
-				// Remove empty slots or such filled with drops of different color
-				
-				if (current.isEmpty() || current.getColor() != winnerColor)
-				{
-					winnerSlots.remove(slotCounter);
-				}
-				else
-				{
-					slotCounter++;
-				}
-			}
-			
-			for (int i = 0; i < winnerSlots.size(); i++)
-			{
-				// Remove empty slots or such filled with drops of different color
-				
-				if (winnerSlots.get(i).isEmpty() || winnerSlots.get(i).getColor() != winnerColor)
-				{
-					winnerSlots.remove(i);
-				}
-			}
-			
-			return winnerSlots;
-		}
-		
-		return null;
-  	}
-  	
   	private Player evaluateCurrentPlayer(Game game)
   	{
   		// Evaluate current player by number of completed turns

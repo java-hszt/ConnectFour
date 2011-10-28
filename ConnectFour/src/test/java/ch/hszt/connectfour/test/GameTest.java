@@ -58,6 +58,7 @@ public class GameTest
 						DropColor.UNKNOWN, startPlayer.getColor());
 		assertNotSame(String.format("DropColor was undefined for player %s!", otherPlayer.toString()),
 						DropColor.UNKNOWN, otherPlayer.getColor());
+		assertNotSame("Same DropColor in use for both of the players!", startPlayer.getColor(), otherPlayer.getColor());
 		
 		assertNotSame(String.format("SkillLevel was undefined for player %s!", startPlayer.toString()),
 						SkillLevel.UNKNOWN, startPlayer.getLevel());

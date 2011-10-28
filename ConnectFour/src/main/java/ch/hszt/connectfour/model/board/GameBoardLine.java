@@ -1,6 +1,8 @@
 package ch.hszt.connectfour.model.board;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -14,7 +16,7 @@ public abstract class GameBoardLine extends GameBoardSlotCollection
 	protected final GameBoard board;
 	
 	protected GameBoardSlot[] slots;
-	
+
 	/**
 	 * Creates a new {@link GameBoardLine} with specified id, that is assigned to the {@link GameBoard}.
 	 * To be called be implementing subclasses.
@@ -70,6 +72,13 @@ public abstract class GameBoardLine extends GameBoardSlotCollection
 	 */
 	public List<GameBoardSlot> asList() 
 	{
-		return Arrays.asList(slots);
+		List<GameBoardSlot> slotList = new ArrayList<GameBoardSlot>();
+		
+		for (GameBoardSlot slot : slots)
+		{
+			slotList.add(slot);
+		}
+		
+		return slotList;
 	}
 }

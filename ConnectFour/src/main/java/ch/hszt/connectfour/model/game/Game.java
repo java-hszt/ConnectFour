@@ -133,7 +133,7 @@ public class Game extends Observable
   	 * @param slot - If not <b>null</b>, this specifies an update of the corresponding {@link GameBoardSlot}.
   	 */
   	public void notifyChanged(GameBoardSlot slot)
-  	{
+  	{  		
   		setChanged();
   		notifyObservers(slot);
   	}

@@ -33,6 +33,10 @@ public class GameSettings
 		this.firstPlayer = firstPlayer;
 		this.secondPlayer = secondPlayer;
 		
+		// Assign drop color
+		
+		assignDropColor();
+		
 		// Determine start player randomly
 		
 		startPlayer = evaluateStartPlayer();
@@ -56,20 +60,47 @@ public class GameSettings
 		return (firstPlayer.equals(startPlayer)) ? secondPlayer : firstPlayer;
 	}
 	
+	/**
+	 * Gets the {@link Player} instance linked to specified {@link DropColor};
+	 * @param color - The {@link DropColor} to look up.
+	 * @return The {@link Player} associated to the specified {@link DropColor}.
+	 */
 	Player getPlayerByColor(DropColor color)
   	{
-  		return (firstPlayer.getColor() == color) ? firstPlayer : secondPlayer;
+  		return (firstPlayer.getDropColor() == color) ? firstPlayer : secondPlayer;
   	}
 	
+	/**
+	 * Reevaluates the start player opening the game.
+	 */
 	void reEvaluateStartPlayer()
 	{
 		startPlayer = evaluateStartPlayer();
 	}
+	
+	private void assignDropColor()
+	{
+		firstPlayer.setDropColor(randomColor());
+		
+		if (firstPlayer.getDropColor() == DropColor.RED)
+		{
+			secondPlayer.setDropColor(DropColor.YELLOW);
+		}
+		else
+		{
+			secondPlayer.setDropColor(DropColor.RED);
+		}
+	}
+	
+	private DropColor randomColor()
+	{
+		Random rand = new Random();
+		return DropColor.parse(rand.nextInt(2));
+	}
 
   	private Player evaluateStartPlayer() 
   	{
-		Random rand = new Random();
-		DropColor color = DropColor.parse(rand.nextInt(2));
+		DropColor color = randomColor();
 		
 		if (color != DropColor.UNKNOWN)
 		{

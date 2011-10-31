@@ -2,6 +2,7 @@
 package ch.hszt.connectfour.model.game;
 
 import ch.hszt.connectfour.model.enumeration.DropColor;
+import ch.hszt.connectfour.model.enumeration.PlayerType;
 import ch.hszt.connectfour.model.enumeration.SkillLevel;
 /**
  * Abstract class for any player participating at a game.
@@ -10,46 +11,56 @@ import ch.hszt.connectfour.model.enumeration.SkillLevel;
  */
 public abstract class Player 
 {
-	private final String name;
-  	private final DropColor color;  	
+	private final String name;  	 	
   	private final SkillLevel level;
+  	private final PlayerType type;
   	
+  	private DropColor color; 
   	private int dropCount;
+  	
+  	/**
+   	* Initializes important members of the player instance - to be called via concrete subclasses.
+  	 * @param type - The associated {@link PlayerType}.
+  	 * @param name - the name of the {@link Player}.
+   	*/
+  	protected Player(PlayerType type, final String name)
+  	{
+  		this(type, name, SkillLevel.EASY);
+  	}
 
   	/**
    	* Initializes important members of the player instance - to be called via concrete subclasses.
-   	* @param name - the name of the {@link Player}.
+  	 * @param type - The associated {@link PlayerType}.
+  	 * @param name - the name of the {@link Player}.
+  	 * @param level - the {@link SkillLevel} to assign to this {@link Player}
    	*/
-  	protected Player(final String name)
+  	protected Player(PlayerType type, final String name, final SkillLevel level) 
   	{
-  		this(name, DropColor.UNKNOWN, SkillLevel.UNKNOWN);
-  	}
-  	
-  	/**
-   	* Initializes important members of the player instance - to be called via concrete subclasses.
-   	* @param name - the name of the {@link Player}.
-   	* @param color - the {@link DropColor} to assign to this {@link Player}. 
-   	*/
-  	protected Player(final String name, final DropColor color)
-  	{
-  		this(name, color, SkillLevel.UNKNOWN);
-  	}
-  	
-  	/**
-   	* Initializes important members of the player instance - to be called via concrete subclasses.
-   	* @param name - the name of the {@link Player}.
-   	* @param color - the {@link DropColor} to assign to this {@link Player}. 
-   	* @param level - the {@link SkillLevel} to assign to this {@link Player}
-   	*/
-  	protected Player(final String name, final DropColor color, final SkillLevel level) 
-  	{
+  		this.type = type;
 		this.name = name;
-		this.color = color;
 		this.level = level;
 		
 		// define initial drop count
 		
 		dropCount = GameSettings.NUMBER_OF_DROPS;
+  	}
+  	
+  	/**
+  	 * Determines, whether this {@link Player} is a human player.
+  	 * @return <b>true</b>, if this instance is human player; otherwise <b>false</b>, if the {@link Player} is a CPU player.
+  	 */
+  	public boolean isHumanPlayer()
+  	{
+  		return type == PlayerType.HUMAN;
+  	}
+  	
+  	/**
+  	 * Sets the specified {@link DropColor} for this {@link Player}.
+  	 * @param color - The {@link DropColor} to be assigned.
+  	 */
+  	public void setDropColor(DropColor color)
+  	{
+  		this.color = color;
   	}
 
   	/* (non-Javadoc)
@@ -146,7 +157,7 @@ public abstract class Player
    	* Returns the associated {@link DropColor}.
    	* @return the associated drop color.
    	*/
-  	public DropColor getColor() 
+  	public DropColor getDropColor() 
   	{
 		return color;
   	}

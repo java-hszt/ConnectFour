@@ -69,7 +69,7 @@ public class GameEngineTest
 		
 		Player startPlayer = game.getStartPlayer();
 		Player otherPlayer = game.getOtherPlayer();
-		DropColor startColor = startPlayer.getColor();
+		DropColor startColor = startPlayer.getDropColor();
 		
 		// make the game controller execute the turn
 		
@@ -154,8 +154,8 @@ public class GameEngineTest
 		Player currentPlayer = status.getCurrentPlayer();
 		Player redPlayer = game.getPlayerByColor(DropColor.RED);
 		Player yellowPlayer = game.getPlayerByColor(DropColor.YELLOW);
-		DropColor start = startPlayer.getColor();
-		DropColor other = otherPlayer.getColor();
+		DropColor start = startPlayer.getDropColor();
+		DropColor other = otherPlayer.getDropColor();
 		
 		// Check for correct start player
 		
@@ -209,13 +209,13 @@ public class GameEngineTest
 			{
 				assertEquals(String.format("Turn [#%d]: Wrong player for next turn!", executedTurns), startPlayer, currentPlayer);
 				assertEquals(String.format("Turn [#%d]: Drop color in GameBoardSlot doesn't match the recently inserted drop!", executedTurns),
-								otherPlayer.getColor(), slot.getColor());				
+								otherPlayer.getDropColor(), slot.getColor());				
 			}
 			else
 			{
 				assertEquals(String.format("Turn [#%d]: Wrong player for next turn!", executedTurns), otherPlayer, currentPlayer);
 				assertEquals(String.format("Turn [#%d]: Drop color in GameBoardSlot doesn't match the recently inserted drop!", executedTurns),
-								startPlayer.getColor(), slot.getColor());
+								startPlayer.getDropColor(), slot.getColor());
 			}
 			
 			// Verify count of remaining drops

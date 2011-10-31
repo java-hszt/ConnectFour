@@ -13,25 +13,35 @@ public enum DropColor
 	/**
 	 * Represents drops with red color.
 	 */
-	RED(0),
+	RED(0, "Red"),
 	/**
 	 * Represents drops with yellow color
 	 */
-	YELLOW(1),
+	YELLOW(1, "Yellow"),
 	/**
 	 * Represents drops with an unspecified color.
 	 */
-	UNKNOWN(-1);
+	UNKNOWN(-1, "Unknown");
 	
 	private final int id;
+	private String niceName;
 	
 	/**
 	 * Creates an instance of this enumeration with associated ID.
 	 * @param id - The underlying ID.
 	 */
-	private DropColor(final int id)
+	private DropColor(final int id, final String niceName)
 	{
 		this.id = id;
+		this.niceName = niceName;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Enum#toString()
+	 */
+	public String toString()
+	{
+		return niceName;
 	}
 
 	/**

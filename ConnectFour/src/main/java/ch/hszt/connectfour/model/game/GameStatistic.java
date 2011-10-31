@@ -26,10 +26,23 @@ public class GameStatistic
 	private Date continuedTime;
 	private Date endTime;
 	
+	/**
+	 * Creates a new instance of {@link GameStatistic} linked to the specified {@link Game}.
+	 * @param game - The {@link Game} this {@link GameStatistic} instance belongs to.
+	 */
 	GameStatistic(final Game game)
 	{
 		this.game = game;
 		startTime = now();
+	}	
+	
+	/**
+	 * Returns the current date and time as {@link Date}.
+	 * @return The current date and time.
+	 */
+	public static Date now()
+	{
+		return Calendar.getInstance().getTime();
 	}
 	
 	/**
@@ -113,10 +126,5 @@ public class GameStatistic
 		}
 		
 		return game.getStatus().countTotalDrops();
-	}
-	
-	static Date now()
-	{
-		return Calendar.getInstance().getTime();
 	}
 }

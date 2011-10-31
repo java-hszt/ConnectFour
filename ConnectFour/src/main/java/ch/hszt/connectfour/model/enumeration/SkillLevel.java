@@ -13,35 +13,33 @@ public enum SkillLevel
 	/**
 	 * Represents the easy {@link SkillLevel}.
 	 */
-	EASY(0),
+	EASY(0, "Easy"),
 	/**
 	 * Represents the advanced {@link SkillLevel}.
 	 */
-	ADVANCED(1),
+	ADVANCED(1, "Advanced"),
 	/**
 	 * Represents the hard {@link SkillLevel}.
 	 */
-	HARD(2),
-	/**
-	 * Represents an unspecified {@link SkillLevel}.
-	 */
-	UNKNOWN(-1);
+	HARD(2, "Hard");
 	
 	private final int id;
+	private final String name;
 	
 	/**
 	 * Creates an instance of this enumeration with associated ID.
 	 * @param id - The underlying ID.
 	 */
-	private SkillLevel(final int id)
+	private SkillLevel(final int id, final String name)
 	{
 		this.id = id;
+		this.name = name;
 	}	
 	
 	/**
 	 * Creates the associated {@link SkillLevel} for specified ID.
 	 * @param id - The ID of the {@link SkillLevel}.
-	 * @return The corresponding {@link SkillLevel} or {link SkillLevel#UNKNOWN} for an unknown ID.
+	 * @return The corresponding {@link SkillLevel} or {link SkillLevel#EASY} for an unknown ID.
 	 */
 	public static SkillLevel parse(int id)
 	{
@@ -54,7 +52,16 @@ public enum SkillLevel
 			case 2:
 				return HARD;
 			default:
-				return UNKNOWN;
+				return EASY;
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Enum#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return name;
 	}
 }

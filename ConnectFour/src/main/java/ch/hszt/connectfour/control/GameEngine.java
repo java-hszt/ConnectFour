@@ -52,7 +52,7 @@ public class GameEngine
 			
 			try
 			{
-				GameBoardSlot slot = board.insertDrop(column, current.getColor());
+				GameBoardSlot slot = board.insertDrop(column, current.getDropColor());
 				
 				// Update drop count of player and update game status
 				

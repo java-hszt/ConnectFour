@@ -20,7 +20,35 @@ public class GameBoardColumn extends GameBoardLine
 	GameBoardColumn(final int id, final GameBoard board) 
 	{
 		super(id, board);
-		this.key = assignKeyById();
+		this.key = assignKeyById(id);
+	}
+	
+	/**
+	 * Returns the associated key by specified column ID.
+	 * @param columnId - The ID of the column.
+	 * @return The key matching the specified column ID.
+	 */
+	public static String assignKeyById(int columnId) 
+	{
+		switch (columnId)
+		{
+			case 1:
+				return "A";
+			case 2:
+				return "B";
+			case 3:
+				return "C";
+			case 4:
+				return "D";
+			case 5:
+				return "E";
+			case 6:
+				return "F";
+			case 7:
+				return "G";
+			default:
+				return null;
+		}
 	}
 
 	/**
@@ -33,11 +61,16 @@ public class GameBoardColumn extends GameBoardLine
 	}
 	
 
-	public GameBoardSlot getSlot(int i) 
+	/**
+	 * The index of the {@link GameBoardSlot} to be retrieved; The index is 1-based - not zero-based.
+	 * @param slotIndex - The index of the {@link GameBoardSlot} to be looked up for.
+	 * @return The associated {@link GameBoardSlot} or <b>null</b>, if the index is out of range.
+	 */
+	public GameBoardSlot getSlot(int slotIndex) 
 	{
-		if (i > 0 && i <= slots.length)
+		if (slotIndex > 0 && slotIndex <= slots.length)
 		{
-			return slots[i-1];
+			return slots[slotIndex-1];
 		}
 		
 		return null;
@@ -63,6 +96,7 @@ public class GameBoardColumn extends GameBoardLine
 	{
 		return key;
 	}
+	
 
 	/**
 	 * Returns the count of drops of specified {@link DropColor} in current {@link GameBoardColumn}.
@@ -179,28 +213,5 @@ public class GameBoardColumn extends GameBoardLine
 		}
 		
 		return slotArr;
-	}
-
-	private String assignKeyById() 
-	{
-		switch (id)
-		{
-			case 1:
-				return "A";
-			case 2:
-				return "B";
-			case 3:
-				return "C";
-			case 4:
-				return "D";
-			case 5:
-				return "E";
-			case 6:
-				return "F";
-			case 7:
-				return "G";
-			default:
-				return null;
-		}
 	}
 }

@@ -55,15 +55,10 @@ public class GameTest
 		assertNotNull(String.format("Name of player %s not set!", otherPlayer.toString()), otherPlayer.getName());
 			
 		assertNotSame(String.format("DropColor was undefined for player %s!", startPlayer.toString()),
-						DropColor.UNKNOWN, startPlayer.getColor());
+						DropColor.UNKNOWN, startPlayer.getDropColor());
 		assertNotSame(String.format("DropColor was undefined for player %s!", otherPlayer.toString()),
-						DropColor.UNKNOWN, otherPlayer.getColor());
-		assertNotSame("Same DropColor in use for both of the players!", startPlayer.getColor(), otherPlayer.getColor());
-		
-		assertNotSame(String.format("SkillLevel was undefined for player %s!", startPlayer.toString()),
-						SkillLevel.UNKNOWN, startPlayer.getLevel());
-		assertNotSame(String.format("SkillLevel was undefined for player %s!", otherPlayer.toString()),
-						SkillLevel.UNKNOWN, otherPlayer.getLevel());
+						DropColor.UNKNOWN, otherPlayer.getDropColor());
+		assertNotSame("Same DropColor in use for both of the players!", startPlayer.getDropColor(), otherPlayer.getDropColor());
 		
 		assertEquals(String.format("Player %s doesn't have correct start count of dops!", startPlayer.toString()),
 					GameSettings.NUMBER_OF_DROPS, startPlayer.getDropCount());

@@ -16,8 +16,10 @@ public class UnitTestUtils
 {
 	static Game prepareGame()
 	{
-		Player first = new HumanPlayer("TestPlayer1", DropColor.RED, SkillLevel.EASY);
-		Player second = new HumanPlayer("TestPlayer2", DropColor.YELLOW, SkillLevel.EASY);
+		Player first = new HumanPlayer("TestPlayer1");
+		first.setDropColor(DropColor.RED);
+		Player second = new HumanPlayer("TestPlayer2");
+		second.setDropColor(DropColor.YELLOW);
 		
 		return new Game(first, second);
 	}
@@ -59,7 +61,7 @@ public class UnitTestUtils
 			Player current = game.getStatus().getCurrentPlayer();
 			
 			super.executeTurn(game, column);
-			System.out.println(String.format("Drop of color %1$s inserted in column %2$s !!!", current.getColor(), column));
+			System.out.println(String.format("Drop of color %1$s inserted in column %2$s !!!", current.getDropColor(), column));
 		}
 		
 		public void printMessage(String message)

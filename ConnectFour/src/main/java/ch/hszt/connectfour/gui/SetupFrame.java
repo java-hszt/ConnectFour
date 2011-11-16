@@ -19,16 +19,19 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
 import ch.hszt.connectfour.exception.GameException;
+import ch.hszt.connectfour.io.XmlSerializer;
 import ch.hszt.connectfour.model.enumeration.PlayerType;
 import ch.hszt.connectfour.model.enumeration.SkillLevel;
 import ch.hszt.connectfour.model.game.Game;
 import ch.hszt.connectfour.model.game.Player;
 import ch.hszt.connectfour.model.game.PlayerFactory;
+import ch.hszt.connectfour.util.GameStarter;
+import ch.hszt.connectfour.util.GuiHelper;
 
 /**
  * Represents the {@link SetupFrame} enabling definition of game settings 
  * and control over starting / stopping / loading / saving a game.
- * @author Markus Vetsch, Daniel Stutz
+ * @author Markus Vetsch
  * @version 1.0, 29.10.2011
  */
 public class SetupFrame extends JFrame
@@ -60,7 +63,7 @@ public class SetupFrame extends JFrame
 	private JButton btnSaveGame;
 	private JButton btnStopGame;
 	
-	private GameFrame gameFrame;
+	private MainGameFrame gameFrame;
 
 	/**
 	 * Creates the {@link SetupFrame}.
@@ -109,6 +112,49 @@ public class SetupFrame extends JFrame
 		return new Game(first, second);
 	}
 	
+	/**
+	 * Updates the underlying game frame, which this instance acts as owner for.
+	 * @param gameFrame - The associated {@link MainGameFrame}.
+	 */
+	public void updateGameFrame(MainGameFrame gameFrame)
+	{
+		this.gameFrame = gameFrame;
+	}
+	
+	
+	/**
+	 * Updates all the user controls according to the status of the specified flag.
+	 * @param isGameStarted - Inidicates, whether the corresponding {@link Game} was already started before
+	 *  and steers correct status handling of the user controls.
+	 */
+	public void updateControls(boolean isGameStarted)
+	{
+		// Update control status depending on whether a game is running
+		
+		cbxFirstPlayer.setEnabled(!isGameStarted);
+		cbxLevelFirstPlayer.setEnabled(!isGameStarted);
+		txtNameFirstPlayer.setEnabled(!isGameStarted);
+		
+		cbxSecondPlayer.setEnabled(!isGameStarted);
+		cbxLevelSecondPlayer.setEnabled(!isGameStarted);
+		txtNameSecondPlayer.setEnabled(!isGameStarted);
+		
+		btnStopGame.setEnabled(isGameStarted);
+		btnLoadGame.setEnabled(!isGameStarted);
+		btnSaveGame.setEnabled(isGameStarted);
+		
+		// Set text of button to start / restart a game
+		
+		if (isGameStarted)
+		{			
+			btnStartNewGame.setText("Restart Game");
+		}
+		else
+		{
+			btnStartNewGame.setText("Start New Game");
+		}
+	}
+	
 	private void initialize()
 	{		
 		// Entire settings panel
@@ -134,6 +180,7 @@ public class SetupFrame extends JFrame
 		btnSaveGame = new JButton("Save Game");
 		btnSaveGame.setEnabled(false);
 		btnSaveGame.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnSaveGame.addActionListener(new SaveGameActionListener(this));
 		
 		// Panels for first / second player setup
 		
@@ -283,32 +330,15 @@ public class SetupFrame extends JFrame
 		cbxSecondPlayer.setSelectedIndex(0);
 	}
 	
-	private void updateControls(boolean isGameStarted)
-	{
-		// Update control status depending on whether a game is running
-		
-		cbxFirstPlayer.setEnabled(!isGameStarted);
-		cbxLevelFirstPlayer.setEnabled(!isGameStarted);
-		txtNameFirstPlayer.setEnabled(!isGameStarted);
-		
-		cbxSecondPlayer.setEnabled(!isGameStarted);
-		cbxLevelSecondPlayer.setEnabled(!isGameStarted);
-		txtNameSecondPlayer.setEnabled(!isGameStarted);
-		
-		btnStopGame.setEnabled(isGameStarted);
-		btnLoadGame.setEnabled(!isGameStarted);
-		btnSaveGame.setEnabled(isGameStarted);
-		
-		if (isGameStarted)
-		{			
-			btnStartNewGame.setText("Restart Game");
-		}
-		else
-		{
-			btnStartNewGame.setText("Start New Game");
-		}
-	}
+	/* ---------------------------------------------------------
+	 * LISTENER IMPLEMENTATIONS
+	 * ---------------------------------------------------------
+	 */
 	
+	/**
+	 * Handles events raised by the combo boxes for selection of the kind of a {@link Player}.
+	 * @author Markus Vetsch
+	 */
 	private class PlayerComboBoxItemListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -316,6 +346,8 @@ public class SetupFrame extends JFrame
 			if (e.getSource() != null && e.getSource() instanceof JComboBox)
 			{
 				JComboBox comboBox = (JComboBox) e.getSource();
+				
+				// Set status of combo and text boxes according to the selected kind of player
 				
 				if (comboBox.getSelectedItem() == PlayerType.HUMAN)
 				{
@@ -351,10 +383,64 @@ public class SetupFrame extends JFrame
 		}
 	}
 	
+	/**
+	 * Handles events raised by pressing the button "Save Game".
+	 * @author Markus Vetsch
+	 */
+	private class SaveGameActionListener implements ActionListener
+	{
+		private SetupFrame frame;
+		
+		/**
+		 * Creates a new {@link SaveGameActionListener} with the {@link SetupFrame} assigned.
+		 * @param frame - The assigned {@link SetupFrame}
+		 */
+		public SaveGameActionListener(SetupFrame frame)
+		{
+			this.frame = frame;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		 */
+		public void actionPerformed(ActionEvent e)
+		{
+			Game game = gameFrame.getGame();
+			
+			if (game != null)
+			{
+				// Start serialization
+				
+				try
+				{
+					String filePath = "C:/temp/ConnectFour/game.xml";
+					XmlSerializer serializer = new XmlSerializer(game);
+					serializer.save(filePath);
+					
+					gameFrame.getController().printMessage("Game successfully saved ...");
+				}
+				catch (Exception ex)
+				{
+					JOptionPane.showMessageDialog(frame, "Game can't be saved! Reason: " + ex.getMessage(),
+							"Game not saved", JOptionPane.ERROR_MESSAGE);
+				}				
+			}			
+		}
+		
+	}
+	
+	/**
+	 * Handles events raised by pressing the button "Stop Game".
+	 * @author Markus Vetsch
+	 */
 	private class StopGameActionListener implements ActionListener
 	{
 		private SetupFrame frame;
 		
+		/**
+		 * Creates a new {@link StopGameActionListener} with the {@link SetupFrame} assigned.
+		 * @param frame - The assigned {@link SetupFrame}
+		 */
 		public StopGameActionListener(SetupFrame frame)
 		{
 			this.frame = frame;
@@ -370,16 +456,14 @@ public class SetupFrame extends JFrame
 			if (game != null)
 			{
 				try
-				{
-					//TODO: Use game controller to start the game
+				{	
+					// Stop the game first
 					
-					//gameFrame.getController().stopGame(game);
-					game.stop();
+					gameFrame.getController().stopGame(game);
 					
 					// Hide and dispose the game frame
 					
-					gameFrame.setVisible(false);
-					gameFrame.dispose();
+					gameFrame.close();
 					
 					// Update controls of setup screen
 					
@@ -394,10 +478,18 @@ public class SetupFrame extends JFrame
 		}
 	}
 	
+	/**
+	 * Handles events raised by pressing the button "Start New Game / Restart Game".
+	 * @author Markus Vetsch
+	 */
 	private class StartGameActionListener implements ActionListener
 	{
 		private SetupFrame frame;
 		
+		/**
+		 * Creates a new {@link StartGameActionListener} with the {@link SetupFrame} assigned.
+		 * @param frame - The assigned {@link SetupFrame}
+		 */
 		public StartGameActionListener(SetupFrame frame)
 		{
 			this.frame = frame;
@@ -407,9 +499,33 @@ public class SetupFrame extends JFrame
 		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 		 */
 		public void actionPerformed(ActionEvent e)
-		{
+		{			
 			if (evaluateSettings())
 			{
+				if (gameFrame != null)
+				{
+					try
+					{
+						// Get associated game and try to stop it, if in state started
+						
+						Game game = gameFrame.getGame();
+						
+						if (game.isStarted())
+						{
+							gameFrame.getController().stopGame(game);
+						}						
+					}
+					catch (GameException ex)
+					{
+						// TODO Auto-generated catch block
+						ex.printStackTrace();
+					}
+					
+					// Close the game frame
+					
+					gameFrame.close();
+				}
+				
 				// Move setup frame
 				
 				setLocation(0, 0);
@@ -421,12 +537,12 @@ public class SetupFrame extends JFrame
 				// Create game and launch the game frame
 				
 				Game game = createGame();
-				gameFrame = new GameFrame(frame, false, game);
+				gameFrame = ((MainGameFrame)GameStarter.launch(frame, game));
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(frame, "Game can't be started - please check all entered settings!",
-												"Invalid game settings", JOptionPane.ERROR_MESSAGE);
+				GuiHelper.showError(frame, "Game can't be started - please check all entered settings!",
+												"Invalid game settings");
 			}			
 		}
 		

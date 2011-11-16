@@ -7,10 +7,11 @@ import ch.hszt.connectfour.model.board.GameBoard;
 import ch.hszt.connectfour.model.enumeration.SkillLevel;
 
 /**
+ * Represents an AI Player with {@link SkillLevel#EASY}.
  * @author Markus Vetsch
  * @version 1.0, 31.10.2011
  */
-public class EasyAIPlayer extends AIPlayer
+public final class EasyAIPlayer extends AIPlayer
 {
   	/**
    	* Initializes important members of the player instance - to be called via concrete subclasses.

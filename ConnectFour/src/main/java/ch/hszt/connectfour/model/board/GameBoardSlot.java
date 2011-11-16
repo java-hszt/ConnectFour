@@ -1,20 +1,23 @@
 package ch.hszt.connectfour.model.board;
 
+import ch.hszt.connectfour.io.Serial;
+import ch.hszt.connectfour.io.SerialObject;
 import ch.hszt.connectfour.model.enumeration.DropColor;
 /**
  * Encapsulates a single slot on the game board, which drops can be inserted to.
  * @author Markus Vetsch
  * @version 1.0, 11.10.2011
  */
-public class GameBoardSlot implements Comparable<GameBoardSlot> 
+public class GameBoardSlot implements Comparable<GameBoardSlot>, Serial
 {
 	private final int id;
-	private final GameBoardColumn column;
+	private transient final GameBoardColumn column;
 	
 	private boolean isEmpty;
 	private DropColor color;
 
-	/**ameBoardSlot} instance on associated {@link GameBoardColumn}.
+	/**
+	* Creates a new {@link GameBoardSlot} instance on associated {@link GameBoardColumn}.
 	* @param column - the associated {@link GameBoardColumn}.
 	*/
 	GameBoardSlot(final int id, final GameBoardColumn column) 
@@ -25,6 +28,10 @@ public class GameBoardSlot implements Comparable<GameBoardSlot>
 		this.color = DropColor.UNKNOWN;
 	}
 	
+	/**
+	 * Gets the key of the current instance, the is build by the column identifier and the row index.
+	 * @return The unique key as {@link String} of this instance.
+	 */
 	public String getKey()
 	{
 		return column.getKey().concat(Integer.toString(id));
@@ -112,5 +119,19 @@ public class GameBoardSlot implements Comparable<GameBoardSlot>
 			color = DropColor.UNKNOWN;
 			isEmpty = true;
 		}
+	}
+
+	public void save(SerialObject obj)
+	{
+		obj.saveInt(id, "id");
+		obj.saveString(column.getKey(), "column");
+		obj.saveBoolean(isEmpty, "isEmpty");
+		obj.saveString(color.toString(), "color");
+	}
+
+	public Serial load(SerialObject obj)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

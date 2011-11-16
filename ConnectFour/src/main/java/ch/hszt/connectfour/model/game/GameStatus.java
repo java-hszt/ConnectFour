@@ -3,6 +3,8 @@ package ch.hszt.connectfour.model.game;
 
 import java.util.List;
 
+import ch.hszt.connectfour.io.Serial;
+import ch.hszt.connectfour.io.SerialObject;
 import ch.hszt.connectfour.model.board.GameBoard;
 import ch.hszt.connectfour.model.board.GameBoardSlot;
 import ch.hszt.connectfour.model.board.GameBoardSlotCollection;
@@ -12,13 +14,13 @@ import ch.hszt.connectfour.model.enumeration.DropColor;
  * @author Markus Vetsch
  * @version 1.0, 13.10.2011
  */
-public class GameStatus
+public class GameStatus implements Serial
 {
-	private boolean isConnectFour =  false;
+	private boolean isConnectFour = false;
 	
-	private GameBoardSlotCollection connectFour;
-	private List<GameBoardSlot> winnerSlots;
-	private DropColor winnerColor;
+	private transient GameBoardSlotCollection connectFour;
+	private transient List<GameBoardSlot> winnerSlots;
+	private transient DropColor winnerColor;
 	
 	private int turnsLeft =  0;
 	private int turnsCompleted =  0;
@@ -27,7 +29,7 @@ public class GameStatus
 	
 	private Player currentPlayer;
 	
-	private Game game;
+	private transient Game game;
 
 	/**
 	 * Creates a new instance of the {@link GameStatus}.
@@ -269,4 +271,20 @@ public class GameStatus
   			return game.getOtherPlayer();
   		}
   	}
+
+	public void save(SerialObject obj)
+	{
+		obj.saveBoolean(isConnectFour, "isConnectFour");
+		obj.saveInt(turnsLeft, "turnsLeft");
+		obj.saveInt(turnsCompleted, "turnsCompleted");
+		obj.saveInt(redDrops, "redDrops");
+		obj.saveInt(yellowDrops, "yellowDrops");
+		obj.saveSerial(currentPlayer);
+	}
+
+	public Serial load(SerialObject obj)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

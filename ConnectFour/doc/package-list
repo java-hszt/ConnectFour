@@ -2,6 +2,8 @@ ch.hszt.connectfour
 ch.hszt.connectfour.control
 ch.hszt.connectfour.exception
 ch.hszt.connectfour.gui
+ch.hszt.connectfour.io
 ch.hszt.connectfour.model.board
 ch.hszt.connectfour.model.enumeration
 ch.hszt.connectfour.model.game
+ch.hszt.connectfour.util

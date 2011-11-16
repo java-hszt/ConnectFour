@@ -5,17 +5,20 @@ import java.util.Observable;
 import ch.hszt.connectfour.control.GameEngine;
 import ch.hszt.connectfour.control.GameObserver;
 import ch.hszt.connectfour.exception.GameException;
+import ch.hszt.connectfour.io.Serial;
+import ch.hszt.connectfour.io.SerialObject;
 import ch.hszt.connectfour.model.board.GameBoard;
 import ch.hszt.connectfour.model.board.GameBoardSlot;
 import ch.hszt.connectfour.model.enumeration.DropColor;
+import ch.hszt.connectfour.util.DateHelper;
 
 /**
  * Represents the abstract definition of a game.
- * Implements {@link Observable} to offer observers notifications about changes on an instance.
+ * Extends {@link Observable} to offer observers notifications about changes on a {@link Game} instance.
  * @author Markus Vetsch
  * @version 1.0, 11.10.2011 
  */
-public class Game extends Observable
+public class Game extends Observable implements Serial
 {
 	private boolean isStarted;
 	
@@ -24,8 +27,6 @@ public class Game extends Observable
   	private GameStatus status;
   	private GameStatistic statistic;
   	private GameSettings settings;
-  	
-//  	private GameObserver observer;
 
   	/**
   	 * Creates an instance of a {@link Game} with associated pair of {@link Player}.
@@ -42,10 +43,13 @@ public class Game extends Observable
 		settings = new GameSettings(firstPlayer, secondPlayer);
   	}
   	
+  	/**
+  	 * Sets an observer to watch this instance for any modifications.
+  	 * @param observer - The {@link GameObserver} for surveillance.
+  	 */
   	public void setObserver(GameObserver observer)
   	{
   		addObserver(observer);
-		// 	this.observer = observer;
   	}
   	
   	/**
@@ -161,7 +165,7 @@ public class Game extends Observable
 
   	/**
   	 * Executes all dedicated actions to stop the {@link Game}
-  	 * @throws IllegalStateException Thrown, if the {@link Game} wasn't started yet.
+  	 * @throws GameException Thrown, if the {@link Game} wasn't started yet.
   	 * The latter can be checked by evaluating the flag {@link Game#isStarted()}.
   	 */
   	public void stop() throws GameException
@@ -173,7 +177,7 @@ public class Game extends Observable
   		
   		isStarted = false;
   		
-  		statistic.setEndTime(GameStatistic.now());
+  		statistic.setEndTime(DateHelper.now());
 		
   		//TODO serialization of game  		
   	}
@@ -213,21 +217,27 @@ public class Game extends Observable
   			throw new GameException("Game can't be restarted, as it wasn't started before!", this);
   		}
   	}
-  	
-  	/**
-  	 * Executes all dedicated actions to save the {@link Game}.
-  	 */
-  	public void save()
-  	{
-  		//TODO serialization of game
-  	}
-  	  	
-  	/**
-  	 * Executes all dedicated actions to restore the {@link Game}.
-  	 */
-  	public void load()
-  	{
-  		//TODO deserialization of game
-  		statistic.setContinuedTime(GameStatistic.now());
-  	}
+
+	/* (non-Javadoc)
+	 * @see ch.hszt.connectfour.io.Serial#save(ch.hszt.connectfour.io.SerialObject)
+	 */
+	public void save(SerialObject obj)
+	{
+		obj.saveBoolean(isStarted, "isStarted");
+		obj.saveSerial(settings);
+		obj.saveSerial(statistic);
+		obj.saveSerial(status);
+	}
+
+	/* (non-Javadoc)
+	 * @see ch.hszt.connectfour.io.Serial#load(ch.hszt.connectfour.io.SerialObject)
+	 */
+	public Serial load(SerialObject obj)
+	{
+		//TODO deserialization of game
+  		statistic.setContinuedTime(DateHelper.now());
+		
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

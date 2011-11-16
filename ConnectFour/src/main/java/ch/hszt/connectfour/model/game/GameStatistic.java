@@ -9,18 +9,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import ch.hszt.connectfour.io.Serial;
+import ch.hszt.connectfour.io.SerialObject;
 import ch.hszt.connectfour.model.board.GameBoard;
+import ch.hszt.connectfour.util.DateHelper;
 
 /**
  * Provides useful meta information about the game.
  * @author Markus Vetsch
  * @version 1.0, 14.10.2011
  */
-public class GameStatistic
+public class GameStatistic implements Serial
 {
 	private static DateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	
-	private final Game game;
+	private transient final Game game;
 	
 	private Date startTime;
 	private Date continuedTime;
@@ -33,16 +36,7 @@ public class GameStatistic
 	GameStatistic(final Game game)
 	{
 		this.game = game;
-		startTime = now();
-	}	
-	
-	/**
-	 * Returns the current date and time as {@link Date}.
-	 * @return The current date and time.
-	 */
-	public static Date now()
-	{
-		return Calendar.getInstance().getTime();
+		startTime = DateHelper.now();
 	}
 	
 	/**
@@ -51,7 +45,7 @@ public class GameStatistic
 	 */
 	public String getStartTime()
 	{
-		return dateFormatter.format(startTime);
+		return DateHelper.getFormattedDate(startTime);
 	}
 	
 	/**
@@ -66,7 +60,7 @@ public class GameStatistic
 			return null;
 		}
 		
-		return dateFormatter.format(continuedTime);
+		return DateHelper.getFormattedDate(continuedTime);
 	}
 	
 	/**
@@ -84,7 +78,7 @@ public class GameStatistic
 	 */
 	public String getEndTime()
 	{
-		return dateFormatter.format(endTime);
+		return DateHelper.getFormattedDate(endTime);
 	}
 	
 	/**
@@ -103,7 +97,7 @@ public class GameStatistic
 	 */
 	public String getDuration()
 	{
-		long duration = now().getTime() - startTime.getTime();
+		long duration = DateHelper.now().getTime() - startTime.getTime();
 		
 		long hours = TimeUnit.MILLISECONDS.toHours(duration);
 		long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
@@ -126,5 +120,21 @@ public class GameStatistic
 		}
 		
 		return game.getStatus().countTotalDrops();
+	}
+
+	public void save(SerialObject obj)
+	{
+		obj.saveDate(startTime, "startTime");
+		
+		if (endTime != null)
+		{
+			obj.saveDate(endTime, "endTime");
+		}
+	}
+
+	public Serial load(SerialObject obj)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

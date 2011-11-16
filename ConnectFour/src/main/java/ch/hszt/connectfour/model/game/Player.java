@@ -1,6 +1,8 @@
 
 package ch.hszt.connectfour.model.game;
 
+import ch.hszt.connectfour.io.Serial;
+import ch.hszt.connectfour.io.SerialObject;
 import ch.hszt.connectfour.model.enumeration.DropColor;
 import ch.hszt.connectfour.model.enumeration.PlayerType;
 import ch.hszt.connectfour.model.enumeration.SkillLevel;
@@ -9,7 +11,7 @@ import ch.hszt.connectfour.model.enumeration.SkillLevel;
  * @author Markus Vetsch
  * @version 1.0, 11.10.2011
  */
-public abstract class Player 
+public abstract class Player implements Serial
 {
 	private final String name;  	 	
   	private final SkillLevel level;
@@ -178,5 +180,20 @@ public abstract class Player
   	public String getName() 
   	{
 		return name;
+  	}
+  	
+  	public void save(SerialObject obj)
+  	{
+  		obj.saveString(name, "name");
+  		obj.saveString(level.toString(), "level");
+  		obj.saveString(type.toString(), "type");
+  		obj.saveString(color.toString(), "color");
+  		obj.saveInt(dropCount, "dropCount");
+  	}
+  	
+  	public Serial load(SerialObject obj)
+  	{
+  		//TODO deserialization
+  		return null;
   	}
 }

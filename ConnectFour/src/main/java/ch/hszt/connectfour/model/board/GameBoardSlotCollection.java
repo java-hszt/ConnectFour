@@ -4,6 +4,9 @@ package ch.hszt.connectfour.model.board;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import ch.hszt.connectfour.io.Serial;
+import ch.hszt.connectfour.io.SerialObject;
 import ch.hszt.connectfour.model.enumeration.DropColor;
 import ch.hszt.connectfour.model.game.Game;
 /**
@@ -11,7 +14,7 @@ import ch.hszt.connectfour.model.game.Game;
  * @author Markus Vetsch
  * @version 1.0, 13.10.2011
  */
-public abstract class GameBoardSlotCollection implements Iterable<GameBoardSlot> 
+public abstract class GameBoardSlotCollection implements Iterable<GameBoardSlot>, Serial 
 {
 	/**
 	 * Returns all {@link GameBoardSlot} instances.
@@ -104,4 +107,15 @@ public abstract class GameBoardSlotCollection implements Iterable<GameBoardSlot>
 		
 		return test;
   	}
+	
+	public void save(SerialObject obj)
+	{
+		obj.saveList(asList());
+	}
+	
+	public Serial load(SerialObject obj)
+	{
+		//TODO;
+		return null;
+	}
 }

@@ -1,18 +1,22 @@
 package ch.hszt.connectfour.gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.geom.Ellipse2D;
 
 import javax.swing.JPanel;
 
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.aspectj.weaver.patterns.ConcreteCflowPointcut.Slot;
 
 /**
- * Customized panel for slot depiction on {@link GameFrame}
+ * Customized panel for slot depiction on {@link MainGameFrame}
  * @author Daniel Stutz, Markus Vetsch
  * @version 1.0, 31.10.2011
  */
@@ -26,6 +30,8 @@ public class SlotPanel extends JPanel
 	private final String key;	
 	private final String column;
 	private final Ellipse2D.Double circle;
+	
+	private boolean isDefault = true;
 
 	/**
 	 * Creates a new circle-shaped {@link SlotPanel}.
@@ -43,6 +49,15 @@ public class SlotPanel extends JPanel
 		
 		addMouseListener(adapter);
 	}
+//	
+//	/**
+//	 * Returns the center pixel coordinates of the {@link SlotPanel}.
+//	 * @return The center pixel coordinates as {@link Point}.
+//	 */
+//	public Point getCenter()
+//	{
+//		return new Point((int)circle.getCenterX(), (int)circle.getCenterY());
+//	}
 	
 	/**
 	 * Returns the key of the {@link SlotPanel}.
@@ -61,6 +76,20 @@ public class SlotPanel extends JPanel
 	{
 		return column;
 	}
+	
+	/**
+	 * Sets the current color of {@link SlotPanel}.
+	 * @param color - The {@link Color} to be applied.
+	 */
+	public void setColor(Color color)
+	{
+		isDefault = false;
+		
+		Graphics2D g2d = (Graphics2D) getGraphics();
+		
+		fill(g2d, color);
+		update(g2d);
+	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
@@ -72,19 +101,28 @@ public class SlotPanel extends JPanel
 		// Enable anti-aliasing
 		
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setColor(Color.WHITE);
-		g2d.fill(circle);
+		
+		// Fill circle initially
+		
+		if (isDefault)
+		{
+			fill(g2d, Color.WHITE);
+		}		
+		
+		// draw outline of circle
+		
+		g2d.setColor(Color.BLACK);
+		g2d.draw(circle);
 	}
-
-//	// super.paintComponent clears offscreen pixmap,
-//	// since we're using double buffering by default.
-//	protected void clear(Graphics g)
-//	{
-//		super.paintComponent(g);
-//	}
-//
-//	protected Ellipse2D.Double getCircle() 
-//	{
-//		return (circle);
-//	}
+	
+	public String toString()
+	{
+		return getKey();
+	}
+	
+	private void fill(Graphics2D g, Color color)
+	{
+		g.setColor(color);
+		g.fill(circle);
+	}
 }

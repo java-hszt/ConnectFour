@@ -1,7 +1,6 @@
-/**
- * Contains the controller and logic implementation of the game.
- */
 package ch.hszt.connectfour.control;
+
+import java.util.List;
 
 import ch.hszt.connectfour.exception.GameException;
 import ch.hszt.connectfour.model.board.GameBoardSlot;

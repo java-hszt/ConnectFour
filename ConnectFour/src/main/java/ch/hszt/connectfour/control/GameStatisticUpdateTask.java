@@ -32,6 +32,8 @@ public class GameStatisticUpdateTask extends TimerTask
 	@Override
 	public void run()
 	{
+		// Refresh the associated statistic
+		
 		controller.refreshStatistic(statistic);
 	}
 

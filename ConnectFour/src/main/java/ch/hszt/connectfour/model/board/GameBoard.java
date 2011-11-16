@@ -7,13 +7,16 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+
+import ch.hszt.connectfour.io.Serial;
+import ch.hszt.connectfour.io.SerialObject;
 import ch.hszt.connectfour.model.enumeration.DropColor;
 /**
  * Represents model-based game board independent of the realization of the user interface.
  * @author Markus Vetsch
  * @version 1.0, 11.10.2011
  */
-public class GameBoard 
+public class GameBoard implements Serial
 {
 	/**
 	 * The maximum number of columns on the game board.
@@ -357,4 +360,18 @@ public class GameBoard
 		
 		return leftOnes;
   	}
+
+	public void save(SerialObject obj)
+	{
+		for (GameBoardSlotCollection coll : getAll())
+		{
+			obj.saveList(coll.asList());
+		}
+	}
+
+	public Serial load(SerialObject obj)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

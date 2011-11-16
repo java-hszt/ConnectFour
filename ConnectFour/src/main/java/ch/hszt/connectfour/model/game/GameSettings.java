@@ -4,6 +4,9 @@
 package ch.hszt.connectfour.model.game;
 
 import java.util.Random;
+
+import ch.hszt.connectfour.io.Serial;
+import ch.hszt.connectfour.io.SerialObject;
 import ch.hszt.connectfour.model.enumeration.DropColor;
 
 /**
@@ -11,7 +14,7 @@ import ch.hszt.connectfour.model.enumeration.DropColor;
  * @author Markus Vetsch
  * @version 1.0, 14.10.2011
  */
-public class GameSettings
+public class GameSettings implements Serial
 {
 	/**
 	 * Defines the initial count of drops per player.
@@ -112,4 +115,17 @@ public class GameSettings
 			return null;
 		}			
   	}
+
+	public void save(SerialObject obj)
+	{
+		obj.saveSerial(firstPlayer);
+		obj.saveSerial(secondPlayer);
+		obj.saveSerial(startPlayer);
+	}
+
+	public Serial load(SerialObject obj)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

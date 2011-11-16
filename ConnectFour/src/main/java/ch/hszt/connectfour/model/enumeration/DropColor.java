@@ -3,6 +3,8 @@
  */
 package ch.hszt.connectfour.model.enumeration;
 
+import java.awt.Color;
+
 /**
  * Enumeration representing the different drop colors.
  * @author Markus Vetsch
@@ -42,6 +44,15 @@ public enum DropColor
 	public String toString()
 	{
 		return niceName;
+	}
+	
+	/**
+	 * Returns the corresponding AWT {@link Color} for UI representation.
+	 * @return The corresponding AWT {@link Color}.
+	 */
+	public Color toAwtColor()
+	{
+		return (id == 0) ? Color.RED : Color.YELLOW;
 	}
 
 	/**

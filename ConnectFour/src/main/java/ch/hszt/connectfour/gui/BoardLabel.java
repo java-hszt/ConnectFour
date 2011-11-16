@@ -11,7 +11,7 @@ import java.awt.RenderingHints;
 import javax.swing.JLabel;
 
 /**
- * Customized class for any label on the board in {@link GameFrame}.
+ * Customized class for any label on the board in {@link MainGameFrame}.
  * @author Markus Vetsch
  * @version 1.0, 30.10.2011
  */
@@ -65,5 +65,6 @@ public class BoardLabel extends JLabel
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.setColor(Color.WHITE);
 		g2D.drawString(getText(), x, y);
+		
 	}
 }

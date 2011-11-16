@@ -12,7 +12,6 @@ import java.awt.event.WindowEvent;
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
@@ -25,11 +24,9 @@ import ch.hszt.connectfour.exception.GameException;
 import ch.hszt.connectfour.model.board.GameBoardColumn;
 import ch.hszt.connectfour.model.enumeration.DialogResult;
 import ch.hszt.connectfour.model.game.Game;
-import ch.hszt.connectfour.model.game.GameStatistic;
 import ch.hszt.connectfour.util.DateHelper;
 import ch.hszt.connectfour.util.GuiHelper;
 
-import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +36,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.JTextArea;
 import java.awt.Font;
 import java.io.File;
-import java.io.StringWriter;
 import javax.swing.JScrollPane;
 
-import org.aspectj.weaver.patterns.ConcreteCflowPointcut.Slot;
 import javax.swing.JTextField;
 
 /**

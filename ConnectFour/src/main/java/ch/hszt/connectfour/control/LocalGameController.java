@@ -4,8 +4,6 @@
 package ch.hszt.connectfour.control;
 
 import java.awt.Color;
-import java.awt.Window;
-import java.util.ArrayList;
 import java.util.List;
 
 import ch.hszt.connectfour.exception.GameException;
@@ -20,7 +18,6 @@ import ch.hszt.connectfour.model.game.Game;
 import ch.hszt.connectfour.model.game.GameStatistic;
 import ch.hszt.connectfour.model.game.GameStatus;
 import ch.hszt.connectfour.util.GameStarter;
-import ch.hszt.connectfour.util.GuiHelper;
 
 /**
  * Concrete implementation of a {@link GameController} for a local game.

@@ -1,19 +1,13 @@
 package ch.hszt.connectfour.gui;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.geom.Ellipse2D;
 
 import javax.swing.JPanel;
-
-import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
-import org.aspectj.weaver.patterns.ConcreteCflowPointcut.Slot;
 
 /**
  * Customized panel for slot depiction on {@link MainGameFrame}

@@ -4,7 +4,6 @@
 package ch.hszt.connectfour.model.game;
 
 import ch.hszt.connectfour.model.board.GameBoard;
-import ch.hszt.connectfour.model.enumeration.DropColor;
 import ch.hszt.connectfour.model.enumeration.PlayerType;
 import ch.hszt.connectfour.model.enumeration.SkillLevel;
 

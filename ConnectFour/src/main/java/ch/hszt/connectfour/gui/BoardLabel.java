@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 /**
  * Customized class for any label on the board in {@link MainGameFrame}.
@@ -21,6 +22,7 @@ public class BoardLabel extends JLabel
 	
 	/**
 	 * Creates a {@link BoardLabel} with specified text
+	 *  using {@link SwingConstants#CENTER} as default for text alignment.
 	 * @param text - The text to be displayed.
 	 * @param x - The x position, at which the label shall be drawn.
 	 * @param y - The y position, at which the label shall be drawn.
@@ -33,9 +35,10 @@ public class BoardLabel extends JLabel
 	}
 	
 	/**
-	 * Creates a {@link BoardLabel} with specified text and alignment constant.
-	 * @see JLabel for alignment constants.
+	 * Creates a {@link BoardLabel} with specified text and alignment.
+	 * @see SwingConstants for alignment constants.
 	 * @param text - The text to be displayed.
+	 * @param alignment - The text alignment; can be specified by using one of the {@link SwingConstants} values.
 	 * @param x - The x position, at which the label shall be drawn.
 	 * @param y - The y position, at which the label shall be drawn.
 	 * @param width - The width of the label.

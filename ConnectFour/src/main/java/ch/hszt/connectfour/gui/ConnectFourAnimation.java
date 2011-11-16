@@ -4,7 +4,6 @@
 package ch.hszt.connectfour.gui;
 
 import java.awt.Color;
-import java.util.Collection;
 import java.util.List;
 
 /**

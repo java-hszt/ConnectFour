@@ -9,6 +9,7 @@ import ch.hszt.connectfour.model.board.GameBoard;
 import ch.hszt.connectfour.model.board.GameBoardSlot;
 import ch.hszt.connectfour.model.board.GameBoardSlotCollection;
 import ch.hszt.connectfour.model.enumeration.DropColor;
+
 /**
  * Encapsulates and provides relevant information about the current status of a game.
  * @author Markus Vetsch
@@ -147,9 +148,7 @@ public class GameStatus implements Serial
 	}
 
 	private void evaluate(Game game) 
-	{
-		GameBoard board = game.getBoard();
-		
+	{		
 		// Update all relevant information of the game
 		
 		updateAll(game);

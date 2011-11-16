@@ -1,7 +1,5 @@
 package ch.hszt.connectfour.control;
 
-import java.util.List;
-
 import ch.hszt.connectfour.exception.GameException;
 import ch.hszt.connectfour.model.board.GameBoardSlot;
 import ch.hszt.connectfour.model.game.Game;

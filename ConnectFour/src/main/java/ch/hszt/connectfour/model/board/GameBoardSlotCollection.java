@@ -1,14 +1,11 @@
 
 package ch.hszt.connectfour.model.board;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import ch.hszt.connectfour.io.Serial;
 import ch.hszt.connectfour.io.SerialObject;
 import ch.hszt.connectfour.model.enumeration.DropColor;
-import ch.hszt.connectfour.model.game.Game;
 /**
  * Abstract class for any collection of {@link GameBoardSlot}.
  * @author Markus Vetsch

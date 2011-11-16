@@ -3,9 +3,6 @@
  */
 package ch.hszt.connectfour.model.game;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -21,8 +18,6 @@ import ch.hszt.connectfour.util.DateHelper;
  */
 public class GameStatistic implements Serial
 {
-	private static DateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-	
 	private transient final Game game;
 	
 	private Date startTime;
@@ -104,6 +99,8 @@ public class GameStatistic implements Serial
 		minutes = (hours == 0) ? minutes : minutes - (60 * hours);
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(duration);
 		seconds = (minutes == 0) ? seconds : seconds - (60 * minutes);
+		
+		// Format elapsed time to HH:mm:ss
 		
 		return String.format("%1$02d:%2$02d:%3$02d", hours, minutes, seconds);
 	}

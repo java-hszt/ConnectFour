@@ -13,8 +13,14 @@ import ch.hszt.connectfour.model.game.Player;
  */
 public enum PlayerType
 {
+	/**
+	 * Represents a human player.
+	 */
 	HUMAN("Human Player"),
-	AI_PLAYER("AI Player");
+	/**
+	 * Represents a player steered by the CPU.
+	 */
+	CPU_PLAYER("CPU Player");
 	
 	private String niceName;
 	

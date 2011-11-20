@@ -31,24 +31,28 @@ public class PlayerFactory
 		{
 			return new HumanPlayer(name);
 		}
-		else
+		else if (type == PlayerType.CPU_PLAYER)
 		{
 			if (level == SkillLevel.EASY)
 			{
-				return new EasyAIPlayer(name, level);
+				return new EasyCpuPlayer(name, level);
 			}
 			else if (level == SkillLevel.ADVANCED)
 			{
-				return new AdvancedAIPlayer(name, level);
+				return new AdvancedCpuPlayer(name, level);
 			}
 			else if (level == SkillLevel.HARD)
 			{
-				return new HardAIPlayer(name, level);
+				return new HardCpuPlayer(name, level);
 			}
 			else
 			{
 				return null;
 			}
+		}
+		else
+		{
+			return null;
 		}
 	}
 }

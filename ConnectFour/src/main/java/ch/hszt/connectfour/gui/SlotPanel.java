@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 /**
  * Customized panel for slot depiction on {@link MainGameFrame}
- * @author Daniel Stutz, Markus Vetsch
+ * @author Markus Vetsch
  * @version 1.0, 31.10.2011
  */
 public class SlotPanel extends JPanel 
@@ -25,7 +25,9 @@ public class SlotPanel extends JPanel
 	private final String column;
 	private final Ellipse2D.Double circle;
 	
-	private boolean isDefault = true;
+	private MouseAdapter adapter;			// reference to the assigned mouse adapter
+	
+	private boolean isDefault = true;		// flag for notification about default color
 
 	/**
 	 * Creates a new circle-shaped {@link SlotPanel}.
@@ -41,6 +43,8 @@ public class SlotPanel extends JPanel
 		this.column = column;
 		this.key = column.concat(Integer.toString(position));
 		
+		this.adapter = adapter;
+		
 		addMouseListener(adapter);
 	}
 //	
@@ -52,6 +56,27 @@ public class SlotPanel extends JPanel
 //	{
 //		return new Point((int)circle.getCenterX(), (int)circle.getCenterY());
 //	}
+	
+	/**
+	 * Updates the underlying {@link MouseAdapter} by enabling / disabling it completely.
+	 * @param enable - If <b>true</b>, the {@link MouseAdapter} is enabled, i.e. the {@link SlotPanel} 
+	 * is capable of handling the registered mouse events; otherwise the {@link MouseAdapter} is disabled, 
+	 * i.e no event handling is possible at all.
+	 */
+	public void updateMouseAdapter(boolean enable)
+	{
+		if (enable)
+		{			
+			if (getMouseListeners().length == 0)
+			{
+				addMouseListener(adapter);
+			}			
+		}
+		else
+		{
+			removeMouseListener(adapter);
+		}
+	}
 	
 	/**
 	 * Returns the key of the {@link SlotPanel}.
@@ -77,9 +102,13 @@ public class SlotPanel extends JPanel
 	 */
 	public void setColor(Color color)
 	{
+		// Notify default color was replaced
+		
 		isDefault = false;
 		
 		Graphics2D g2d = (Graphics2D) getGraphics();
+		
+		// Fill and redraw
 		
 		fill(g2d, color);
 		update(g2d);
@@ -109,11 +138,19 @@ public class SlotPanel extends JPanel
 		g2d.draw(circle);
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.awt.Component#toString()
+	 */
 	public String toString()
 	{
 		return getKey();
 	}
 	
+	/**
+	 * Fills the circle shape specified in {@link SlotPanel#circle} with specified {@link Color}.
+	 * @param g - The {@link Graphics2D} context.
+	 * @param color - The fill {@link Color} to be applied.
+	 */
 	private void fill(Graphics2D g, Color color)
 	{
 		g.setColor(color);

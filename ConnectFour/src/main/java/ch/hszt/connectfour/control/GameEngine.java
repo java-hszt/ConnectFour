@@ -11,7 +11,7 @@ import ch.hszt.connectfour.model.game.GameStatus;
 import ch.hszt.connectfour.model.game.Player;
 
 /**
- * Encapsulates all the relevant game logic.
+ * Encapsulates all the relevant game logic for inserting drops and for updating the {@link GameStatus} and {@link GameStatistic}.
  * @author Markus Vetsch
  * @version 1.0, 13.10.2011
  */

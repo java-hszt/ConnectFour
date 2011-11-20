@@ -23,13 +23,12 @@ public class GameStatus implements Serial
 	private transient List<GameBoardSlot> winnerSlots;
 	private transient DropColor winnerColor;
 	
-	private int turnsLeft =  0;
+	private int turnsRemaining =  0;
 	private int turnsCompleted =  0;
 	private int yellowDrops =  0;
 	private int redDrops =  0;
 	
 	private Player currentPlayer;
-	
 	private transient Game game;
 
 	/**
@@ -63,9 +62,23 @@ public class GameStatus implements Serial
 		return currentPlayer;
 	}
 	
+	/**
+	 * Sets the current {@link Player} in charge to execute the next turn.
+	 * @param player - The {@link Player} in charge to execute the next turn.
+	 */
 	void setCurrentPlayer(Player player)
 	{
 		currentPlayer = player;
+	}
+	
+	/**
+	 * Evaluates, if the current {@link Player} in charge to execute 
+	 * the next turn is a {@link HumanPlayer} or an {@link CpuPlayer}.
+	 * @return <b>true</b>, if the current {@link Player} is an {@link CpuPlayer}; otherwise <b>false</b>.
+	 */
+	public boolean isCurrentCpuPlayer()
+	{
+		return currentPlayer instanceof CpuPlayer;
 	}
 
 	/**
@@ -74,7 +87,7 @@ public class GameStatus implements Serial
 	 */
 	public int countRemainingTurns()
 	{
-		return turnsLeft;
+		return turnsRemaining;
 	}
 	
 	/**
@@ -133,6 +146,16 @@ public class GameStatus implements Serial
 	}
 	
 	/**
+	 * Determines, if the linked {@link Game} ended with a draw. 
+	 * @return <b>true</b>, if the {@link Game} ended with a draw, i.e. there are no turns remaining on the {@link GameBoard} 
+	 * and there is no ConnectFour situation; otherwise <b>false</b>.
+	 */
+	public boolean isDraw()
+	{
+		return (!isConnectFour && turnsRemaining == 0);
+	}
+	
+	/**
 	 * Returns the winning {@link Player} if a connect four situation is given.
 	 * @return The winning {@link Player} or <b>null</b>, if no winner determined yet, i.e. no connect four situation is given.
 	 * The latter can be evaluated by checking {@link GameStatus#isConnectFour()} value.
@@ -169,7 +192,7 @@ public class GameStatus implements Serial
 		
 		// Check turn information
 		
-		turnsLeft = getNumberOfPossibleTurns(board);
+		turnsRemaining = getNumberOfPossibleTurns(board);
 		turnsCompleted = getNumberOfCompletedTurns(board);
 		yellowDrops = getNumberOfDropsByColor(board, DropColor.YELLOW);
 		redDrops = getNumberOfDropsByColor(board, DropColor.RED);
@@ -274,7 +297,7 @@ public class GameStatus implements Serial
 	public void save(SerialObject obj)
 	{
 		obj.saveBoolean(isConnectFour, "isConnectFour");
-		obj.saveInt(turnsLeft, "turnsLeft");
+		obj.saveInt(turnsRemaining, "turnsRemaining");
 		obj.saveInt(turnsCompleted, "turnsCompleted");
 		obj.saveInt(redDrops, "redDrops");
 		obj.saveInt(yellowDrops, "yellowDrops");

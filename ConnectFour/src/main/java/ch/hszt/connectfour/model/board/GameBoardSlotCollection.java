@@ -100,7 +100,7 @@ public abstract class GameBoardSlotCollection implements Iterable<GameBoardSlot>
 			
 			i++;
 		}
-		while (!test && i < slots.size() - 3);	// Outer loop condition; four in a row not found and >= 4 slots left
+		while (!test && i < slots.size() - 3);	// Outer loop condition; four in a row not found and <= 4 slots left
 		
 		return test;
   	}

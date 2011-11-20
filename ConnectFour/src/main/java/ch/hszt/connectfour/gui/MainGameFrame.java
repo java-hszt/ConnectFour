@@ -1,7 +1,9 @@
 package ch.hszt.connectfour.gui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
@@ -16,13 +18,13 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import ch.hszt.connectfour.control.GameController;
-import ch.hszt.connectfour.control.GameEngine;
 import ch.hszt.connectfour.control.GameObserver;
 import ch.hszt.connectfour.control.GameStatisticUpdateTask;
 import ch.hszt.connectfour.control.LocalGameController;
 import ch.hszt.connectfour.exception.GameException;
 import ch.hszt.connectfour.model.board.GameBoardColumn;
 import ch.hszt.connectfour.model.enumeration.DialogResult;
+import ch.hszt.connectfour.model.game.CpuPlayer;
 import ch.hszt.connectfour.model.game.Game;
 import ch.hszt.connectfour.util.DateHelper;
 import ch.hszt.connectfour.util.GuiHelper;
@@ -30,15 +32,21 @@ import ch.hszt.connectfour.util.GuiHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TreeMap;
 import javax.swing.border.LineBorder;
+import javax.swing.text.DefaultCaret;
 import javax.swing.JTextArea;
 import java.awt.Font;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.JScrollPane;
 
 import javax.swing.JTextField;
+
+import org.aspectj.weaver.patterns.ConcreteCflowPointcut.Slot;
 
 /**
  * Represents the frame presenting the game board allowing direct user interaction.
@@ -65,7 +73,8 @@ public class MainGameFrame extends JDialog implements GameFrame
 	private JPanel boardPanel;
 	private JPanel gameInfoPanel;
 	
-	JTextArea messageArea;
+	private JTextArea messageArea;
+	private JScrollPane scrollPane;
 	
 	private Timer timer;
 	
@@ -75,12 +84,15 @@ public class MainGameFrame extends JDialog implements GameFrame
 	
 	private Game game;
 	private GameController controller;
+	
 	private JTextField txtDuration;
 	private JTextField txtCurrentPlayer;
 	private JTextField txtCompletedTurns;
 	private JTextField txtRemainingTurns;
 	private JTextField txtYellowDrops;
 	private JTextField txtRedDrops;
+	
+	private boolean isCurrentCpuPlayer;
 	
 	/**
 	 * Creates the {@link MainGameFrame}.
@@ -108,8 +120,8 @@ public class MainGameFrame extends JDialog implements GameFrame
 		// Set title with players
 		
 		setTitle(String.format("Connect Four - Running Game: %1$s [%2$s] vs. %3$s [%4$s]",
-								game.getStartPlayer().getName(), game.getStartPlayer().getDropColor().toString().toUpperCase(),
-								game.getOtherPlayer().getName(), game.getOtherPlayer().getDropColor().toString().toUpperCase()));
+								game.getStartPlayer().getName(), game.getStartPlayer().getDropColor().toString(),
+								game.getOtherPlayer().getName(), game.getOtherPlayer().getDropColor().toString()));
 
 		contentPane = getContentPane();
 		
@@ -138,9 +150,7 @@ public class MainGameFrame extends JDialog implements GameFrame
 	 * @return The underlying {@link GameController} instance.
 	 */
 	public GameController getController()
-	{
-		//TODO: Concrete implementation of the game controller
-		
+	{		
 		return controller;
 	}
 	
@@ -151,7 +161,6 @@ public class MainGameFrame extends JDialog implements GameFrame
 	public void printMessage(String message)
 	{
 		messageArea.append(message + "\n");
-		messageArea.invalidate();
 	}
 	
 	/**
@@ -269,6 +278,21 @@ public class MainGameFrame extends JDialog implements GameFrame
 		txtRedDrops.invalidate();
 	}
 	
+	public void updateIsCurrentCpuPlayer(boolean isCurrentCpuPlayer)
+	{
+		this.isCurrentCpuPlayer = isCurrentCpuPlayer;
+		updateSlotPanels(!isCurrentCpuPlayer);
+		
+		if (this.isCurrentCpuPlayer)
+		{
+			// Turn execution of CPU player to take place in separate thread
+			
+			CpuPlayerTurn turn = new CpuPlayerTurn();
+			Thread cpuPlayerThread = new Thread(turn, "CpuPlayerThread");
+			cpuPlayerThread.start();
+		}
+	}
+
 	/**
 	 * Starts the timer, that periodically updates statistic information in the information section in a separate thread.
 	 */
@@ -276,7 +300,7 @@ public class MainGameFrame extends JDialog implements GameFrame
 	{
 		GameStatisticUpdateTask update = new GameStatisticUpdateTask(controller, game.getStatistic());
 		
-		// Assign tast, start immediately with a period of 1 second (1000 ms)
+		// Assign task, start immediately with a period of 1 second (1000 ms)
 		
 		timer.schedule(update, DateHelper.now(), 1000);
 	}
@@ -291,16 +315,35 @@ public class MainGameFrame extends JDialog implements GameFrame
 	
 	/**
 	 * Asks, whether a game restart shall be realized using the same game settings.
+	 * @param isDraw - Indicates, if the recent {@link Game} ended with a draw.
 	 * @return The {@link DialogResult}, which the question was answered with.
 	 */
-	public DialogResult askForRestart()
+	public DialogResult askForRestart(boolean isDraw)
 	{
-		String winner = game.getStatus().getWinner().getName();
-		return GuiHelper.showQuestion(this, 
-										String.format("The winner of previous game is player %s! Would you like to start a new game with identical settings?", winner),
-										"Connect Four");
+		if (isDraw)
+		{
+			return GuiHelper.showQuestion(this,
+										"The previous game ended with a draw. Would you like to start a new game with identical settings?",
+										"Draw");
+		}
+		else
+		{
+			String winner = game.getStatus().getWinner().getName();
+			return GuiHelper.showQuestion(this, 
+											String.format("The winner of previous game is player %s! Would you like to start a new game with identical settings?", winner),
+											"Connect Four");
+		}		
 	}
+	
+	/*
+	 * ------------------------------------------------------
+	 * GUI INIT CODE
+	 * ------------------------------------------------------
+	 */
 
+	/**
+	 * GUI initialization code
+	 */
 	private void initialize()
 	{		
 		contentPane.setLayout(null);
@@ -316,12 +359,16 @@ public class MainGameFrame extends JDialog implements GameFrame
 		boardPanel.setLayout(null);
 		boardPanel.setBackground(Color.BLUE);
 		
+		// board as left component in split panel
+		
 		splitPane.setLeftComponent(boardPanel);		
 		
 		gameInfoPanel = new JPanel();		
 		gameInfoPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		gameInfoPanel.setBackground(new Color(238, 232, 170));
 		gameInfoPanel.setLayout(null);
+		
+		// info panel as right component in split panel
 		
 		splitPane.setRightComponent(gameInfoPanel);
 		
@@ -400,11 +447,13 @@ public class MainGameFrame extends JDialog implements GameFrame
 		txtRedDrops.setBounds(10, 406, 217, 28);
 		gameInfoPanel.add(txtRedDrops);
 		
+		// The application image
+		
 		canvas = new AppImageCanvas(loadApplicationImage());
 		canvas.setBounds(768, 0, 249, 70);
 		contentPane.add(canvas);
 		
-		JScrollPane scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();
 		scrollPane.setBorder(new LineBorder(new Color(130, 135, 144), 2));
 		scrollPane.setBounds(0, 0, 768, 70);
 		contentPane.add(scrollPane);
@@ -415,8 +464,14 @@ public class MainGameFrame extends JDialog implements GameFrame
 		messageArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		messageArea.setLineWrap(true);
 		
-		slotPanels = buildSlotPanels();
+		// This piece of code enables auto-refresh of text area
 		
+		DefaultCaret caret = (DefaultCaret) messageArea.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		
+		// Create slot panels
+		
+		slotPanels = buildSlotPanels();		
 		addSlotPanels(boardPanel);
 		
 		printMessage("Successfully initialized GUI ...");
@@ -425,7 +480,7 @@ public class MainGameFrame extends JDialog implements GameFrame
 	}
 	
 	/* -----------------------------------------------------------------
-	 * HELPER FOR GUI INIT (BUILDING SLOT PANELS)
+	 * HELPER FOR GUI INIT (BUILDING SLOT PANELS / APP IMAGE)
 	 * -----------------------------------------------------------------
 	 */
 
@@ -552,6 +607,10 @@ public class MainGameFrame extends JDialog implements GameFrame
 		return panels;
 	}	
 	
+	/**
+	 * Loads the application image to be depicted in the separate canvas
+	 * @return The loaded {@link Image} to be depicted.
+	 */
 	private Image loadApplicationImage()
 	{
 		//TODO: Move to config
@@ -577,8 +636,25 @@ public class MainGameFrame extends JDialog implements GameFrame
 		return null;
 	}
 	
+	/**
+	 * Enables / disables event handling on all the {@link SlotPanel} on the game board.
+	 * @param enable - If <b>true</b>, enables event handling for all the {@link SlotPanel} on the game board;
+	 *  otherwise, disables event handling entirely (e.g. for {@link CpuPlayer}).
+	 */
+	private void updateSlotPanels(boolean enable)
+	{
+		for (Component component : boardPanel.getComponents())
+		{
+			if (component instanceof SlotPanel)
+			{
+				SlotPanel panel = (SlotPanel) component;
+				panel.updateMouseAdapter(enable);
+			}
+		}
+	}
+	
 	/* ---------------------------------------------------------
-	 * LISTENER / ADAPTER IMPLEMENTATIONS
+	 * LISTENER / ADAPTER / HELPER IMPLEMENTATIONS
 	 * ---------------------------------------------------------
 	 */
 	
@@ -603,6 +679,8 @@ public class MainGameFrame extends JDialog implements GameFrame
 				
 				Window owner = getOwner();
 				
+				// Update relation to setup frame as owning frame
+				
 				if (owner != null && owner instanceof SetupFrame)
 				{
 					SetupFrame frame = (SetupFrame) owner;
@@ -613,17 +691,11 @@ public class MainGameFrame extends JDialog implements GameFrame
 				
 				controller.startGame(game);				
 				
-				printMessage("Game successfully started ...");
-				
 				// Start the timer in a background thread
 				
 				startTimer();
 				
 				printMessage("Timer for periodic update of game statistics started ...");
-				
-				// Directly update the game
-				
-				GameEngine.getInstance().updateGame(game);
 			}
 			catch (GameException ex)
 			{
@@ -672,5 +744,49 @@ public class MainGameFrame extends JDialog implements GameFrame
 				}				
 			}
 		}
+	}
+	
+	/**
+	 * Implementation of separate thread to simulate turns for a {@link CpuPlayer}.
+	 */
+	private class CpuPlayerTurn implements Runnable
+	{		
+		/* (non-Javadoc)
+		 * @see java.lang.Runnable#run()
+		 */
+		public void run()
+		{			
+			try
+			{				
+				CpuPlayer player = (CpuPlayer) game.getStatus().getCurrentPlayer();
+				
+				// Simulate CPU thinking time (1 to 5 seconds)
+				
+				final int thinkingTime = (1 + new Random().nextInt(5)) * 1000;				
+				controller.printMessage(String.format("CPU Player [%s] thinking about next turn ...",
+														player.getDropColor().toString()));
+				
+				Thread.sleep(thinkingTime);
+				
+				// Let the CPU player decide, which column to insert the drop into
+				
+				Game game = getGame();
+				String column = player.determineNextTurn(game.getBoard());
+
+				// Finally execute the turn
+				
+				controller.executeTurn(game, column);
+			}
+			catch (GameException ex)
+			{
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+			catch (InterruptedException ex)
+			{
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+		}		
 	}
 }

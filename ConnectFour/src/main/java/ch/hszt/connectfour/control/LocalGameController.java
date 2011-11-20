@@ -5,6 +5,7 @@ package ch.hszt.connectfour.control;
 
 import java.awt.Color;
 import java.util.List;
+import java.util.Random;
 
 import ch.hszt.connectfour.exception.GameException;
 import ch.hszt.connectfour.gui.MainGameFrame;
@@ -14,9 +15,11 @@ import ch.hszt.connectfour.gui.SlotPanel;
 import ch.hszt.connectfour.model.board.GameBoardSlot;
 import ch.hszt.connectfour.model.enumeration.DialogResult;
 import ch.hszt.connectfour.model.enumeration.DropColor;
+import ch.hszt.connectfour.model.game.CpuPlayer;
 import ch.hszt.connectfour.model.game.Game;
 import ch.hszt.connectfour.model.game.GameStatistic;
 import ch.hszt.connectfour.model.game.GameStatus;
+import ch.hszt.connectfour.model.game.Player;
 import ch.hszt.connectfour.util.GameStarter;
 
 /**
@@ -43,59 +46,33 @@ public class LocalGameController extends GameController
 	@Override
 	public void refreshStatus(GameStatus status)
 	{
-		// Update game status
+		// Update game status for information section
 		
 		frame.setRemainingTurns(Integer.toString(status.countRemainingTurns()));
 		frame.setCompletedTurns(Integer.toString(status.countCompletedTurns()));
-		frame.setCurrentPlayer(status.getCurrentPlayer().getName());
+		frame.setCurrentPlayer(String.format("%1$s [%2$s]",
+											status.getCurrentPlayer().getName(),
+											status.getCurrentPlayer().getDropColor().toString()));
 		frame.setYellowDrops(Integer.toString(status.countYellowDrops()));
 		frame.setRedDrops(Integer.toString(status.countRedDrops()));
+		
+		// Update information about kind of current player
+		
+		frame.updateIsCurrentCpuPlayer(status.isCurrentCpuPlayer());
 		
 		// Respect eventually connect four
 		
 		if (status.isConnectFour())
 		{			
-			// Print status messages and refresh affected slots by highlighting them
-			
-			List<GameBoardSlot> slots = status.getWinnerSlots();
-			
-			printMessage(String.format("Player %s has ConnectFour and won the current game ...",
-										status.getWinner().getName()));
-			printMessage(String.format("Winning slots: %s ...", getWinningSlots(slots)));
-			
-			refreshSlots(slots);
-			
-			// Handling for possible game restart
-			
-			try
-			{
-				SetupFrame owner = (SetupFrame)frame.getOwner();
-				frame.stopTimer();
-				
-				DialogResult result = frame.askForRestart();
-				
-				if (result == DialogResult.YES)
-				{					
-					owner.updateGameFrame(null);
-					
-					Game newGame = new Game(frame.getGame().getStartPlayer(), frame.getGame().getOtherPlayer());
-					
-					frame.close();
-					
-					frame = (MainGameFrame)GameStarter.launch(owner, newGame);
-				}
-				else
-				{
-					stopGame(frame.getGame());
-					owner.updateControls(frame.getGame().isStarted());
-					frame.close();
-				}
-			}
-			catch (GameException e)
-			{
-				printMessage("Game currently can't be stopped! Reason: " + e.getMessage());
-			}			
+			handleConnectFour(status);	
 		}
+		
+		// Respect eventually a draw otherwise
+		
+		else if (status.isDraw())
+		{
+			handleDraw(status);
+		}		
 	}
 
 	/* (non-Javadoc)
@@ -164,7 +141,109 @@ public class LocalGameController extends GameController
 	{
 		frame.printMessage(message);
 	}
+	
+	/**
+	 * Handles a ConnectFour situation and executes the necessary actions on GUI and data model side
+	 * @param status - The current {@link GameStatus} providing the ConnectFour situation.
+	 */
+	private void handleConnectFour(GameStatus status)
+	{
+		// Print status messages and refresh affected slots by highlighting them
+		
+		List<GameBoardSlot> slots = status.getWinnerSlots();
+		
+		printMessage(String.format("Player %s has ConnectFour and won the current game ...",
+									status.getWinner().getName()));
+		printMessage(String.format("Winning slots: %s ...", getWinningSlots(slots)));
+		
+		refreshSlots(slots);
+		
+		// Handling for possible game restart
+		
+		evaluateGameRestart(status);		
+	}
+	
+	/**
+	 * Handles a draw situation and executes the necessary actions on GUI and data model side
+	 * @param status - The current {@link GameStatus} providing the draw situation.
+	 */
+	private void handleDraw(GameStatus status)
+	{
+		// Print message to text area
+		
+		printMessage("There are no possible turns remaining - game ends with a draw ...");
+		
+		// Handling for possible game restart
+		
+		evaluateGameRestart(status);
+	}
 
+	/**
+	 * Performs necessary steps, after previous {@link Game} has ended and asks for a restart with identical game settings.
+	 * @param status - The {@link GameStatus} of previously ended {@link Game}.
+	 */
+	private void evaluateGameRestart(GameStatus status)
+	{
+		try
+		{
+			SetupFrame owningFrame = (SetupFrame)frame.getOwner();
+			frame.stopTimer();
+			
+			// Ask for game restart - slightly different question according to draw / connect four
+			
+			DialogResult result = frame.askForRestart(status.isDraw());
+			
+			// Handle result of the restart question
+			
+			if (result == DialogResult.YES)
+			{					
+				// reset reference to game frame for owning frame
+				
+				owningFrame.updateGameFrame(null);
+				
+				Player either = frame.getGame().getStartPlayer();
+				Player other = frame.getGame().getOtherPlayer();
+				
+				// reset drop counts per player
+				
+				either.resetDropCount();
+				other.resetDropCount();
+				
+				// create new game with same players as in previous game
+				
+				Game newGame = new Game(either, other);
+				
+				// close and dispose the frame - create new frame for new game
+				
+				frame.close();				
+				frame = (MainGameFrame)GameStarter.launch(owningFrame, newGame);
+			}
+			else
+			{
+				// otherwise stop previous game
+				
+				stopGame(frame.getGame());
+				
+				// update the controls in the owning frame according to game status
+				
+				owningFrame.updateControls(frame.getGame().isStarted());
+				
+				// close and dispose the frame - create new frame for new game
+				
+				frame.close();
+			}
+		}
+		catch (GameException e)
+		{
+			printMessage("Game currently can't be stopped! Reason: " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Returns a {@link String} representation of the specified set of {@link GameBoardSlot}.
+	 * @param slots - The affected set of {@link GameBoardSlot}.
+	 * @return The {@link String} representation of the specified <code>Iterable<GameBoardSlot></code> set.
+	 */
 	private String getWinningSlots(Iterable<GameBoardSlot> slots)
 	{
 		StringBuilder sb = new StringBuilder();

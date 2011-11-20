@@ -317,6 +317,10 @@ public class GameBoard implements Serial
   		return false;
   	}
 
+  	/**
+  	 * Creates the <code>List<GameBoardDiagonal></code> in up right direction (bottom left to top right)
+  	 * @return The entire list of {@link GameBoardDiagonal}.
+  	 */
   	private List<GameBoardDiagonal> createUpRightDiagonals() 
   	{
 		List<GameBoardDiagonal> leftOnes = new ArrayList<GameBoardDiagonal>();

@@ -25,6 +25,10 @@ public abstract class GameController
 	public void startGame(Game game) throws GameException
 	{
 		game.start();
+		
+		printMessage("Game successfully started ...");
+		
+		GameEngine.getInstance().updateGame(game);
 	}
 	
 	/**
@@ -45,6 +49,7 @@ public abstract class GameController
 	public void restartGame(Game game) throws GameException
 	{
 		game.restart();
+		GameEngine.getInstance().updateGame(game);
 	}
 	
 	/**

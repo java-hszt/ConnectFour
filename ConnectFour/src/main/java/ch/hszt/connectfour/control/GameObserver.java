@@ -6,7 +6,9 @@ package ch.hszt.connectfour.control;
 import java.util.Observable;
 import java.util.Observer;
 
+import ch.hszt.connectfour.exception.GameException;
 import ch.hszt.connectfour.model.board.GameBoardSlot;
+import ch.hszt.connectfour.model.game.CpuPlayer;
 import ch.hszt.connectfour.model.game.Game;
 
 /**
@@ -44,7 +46,7 @@ public class GameObserver implements Observer
 	 */
 	public void update(Observable o, Object arg)
 	{
-		// now get the update information
+		// now get the updated information
 		
 		if (o instanceof Game)
 		{

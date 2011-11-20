@@ -3,6 +3,7 @@ package ch.hszt.connectfour;
 import java.awt.EventQueue;
 
 import ch.hszt.connectfour.gui.SetupFrame;
+import ch.hszt.connectfour.util.GuiHelper;
 
 /**
  * Starting class of the application providing the main method.
@@ -27,6 +28,9 @@ public class ConnectFour
 				}
 				catch (Exception e)
 				{
+					GuiHelper.showError(null,
+										String.format("Error during startup: %s", e.getMessage()),
+										"Unexpected error");
 					e.printStackTrace();
 				}
 			}

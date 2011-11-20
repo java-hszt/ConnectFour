@@ -155,12 +155,11 @@ public class Game extends Observable implements Serial
   			throw new GameException("Game can't be started, as it was already started before!", this);
   		}
   		
-  		// Create game statistic and immediately update game status for the first time
+  		isStarted = true;
+  		
+  		// Create game statistic
 	  		
 		statistic = new GameStatistic(this);
-		GameEngine.getInstance().updateGame(this);
-		
-		isStarted = true;
   	}
 
   	/**

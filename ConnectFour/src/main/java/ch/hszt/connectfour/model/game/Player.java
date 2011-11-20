@@ -48,6 +48,14 @@ public abstract class Player implements Serial
   	}
   	
   	/**
+  	 * Resets the drop count of current {@link Player} to the default value {@link GameSettings#NUMBER_OF_DROPS}.
+  	 */
+  	public void resetDropCount()
+  	{
+  		dropCount = GameSettings.NUMBER_OF_DROPS;
+  	}
+  	
+  	/**
   	 * Determines, whether this {@link Player} is a human player.
   	 * @return <b>true</b>, if this instance is human player; otherwise <b>false</b>, if the {@link Player} is a CPU player.
   	 */

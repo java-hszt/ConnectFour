@@ -15,15 +15,15 @@ public enum DropColor
 	/**
 	 * Represents drops with red color.
 	 */
-	RED(0, "Red"),
+	RED(0, "RED"),
 	/**
 	 * Represents drops with yellow color
 	 */
-	YELLOW(1, "Yellow"),
+	YELLOW(1, "YELLOW"),
 	/**
 	 * Represents drops with an unspecified color.
 	 */
-	UNKNOWN(-1, "Unknown");
+	UNKNOWN(-1, "UNKNOWN");
 	
 	private final int id;
 	private String niceName;

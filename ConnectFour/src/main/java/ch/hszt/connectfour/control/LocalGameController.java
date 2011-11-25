@@ -56,15 +56,16 @@ public class LocalGameController extends GameController
 		frame.setYellowDrops(Integer.toString(status.countYellowDrops()));
 		frame.setRedDrops(Integer.toString(status.countRedDrops()));
 		
-		// Update information about kind of current player
-		
-		frame.updateIsCurrentCpuPlayer(status.isCurrentCpuPlayer());
-		
 		// Respect eventually connect four
 		
 		if (status.isConnectFour())
 		{			
-			handleConnectFour(status);	
+			handleConnectFour(status);
+			
+			// Important to call return here
+			// Otherwise CpuPlayer thread would be started once again
+			
+			return;
 		}
 		
 		// Respect eventually a draw otherwise
@@ -72,7 +73,16 @@ public class LocalGameController extends GameController
 		else if (status.isDraw())
 		{
 			handleDraw(status);
-		}		
+			
+			// Important to call return here
+						// Otherwise CpuPlayer thread would be started once again
+			
+			return;
+		}
+		
+		// Update information about kind of current player => triggers CPU player turn
+		
+		frame.notifyIsCurrentCpuPlayer(status.isCurrentCpuPlayer());
 	}
 
 	/* (non-Javadoc)

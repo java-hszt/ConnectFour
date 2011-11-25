@@ -3,7 +3,8 @@
  */
 package ch.hszt.connectfour.model.game;
 
-import ch.hszt.connectfour.model.board.GameBoard;
+import java.util.List;
+
 import ch.hszt.connectfour.model.enumeration.PlayerType;
 import ch.hszt.connectfour.model.enumeration.SkillLevel;
 
@@ -26,8 +27,11 @@ public abstract class CpuPlayer extends Player
 
 	/**
 	 * Determines the column of next turn of the {@link CpuPlayer}.
-	 * @param board - The {@link GameBoard} for evaluation of next turn.
+	 * @param game - The {@link Game} for evaluation of next turn.
 	 * @return The column identifier for execution of next turn. 
 	 */
-	public abstract String determineNextTurn(GameBoard board);
+	public abstract String determineNextTurn(Game game);
+	
+	protected abstract List<DropSequence> gatherOwnSequences(Game game);
+	protected abstract List<DropSequence> gatherOpponentSequences(Game game);
 }

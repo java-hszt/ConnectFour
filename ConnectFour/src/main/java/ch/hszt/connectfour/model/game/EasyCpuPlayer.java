@@ -3,11 +3,14 @@
  */
 package ch.hszt.connectfour.model.game;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Random;
 
 import ch.hszt.connectfour.model.board.GameBoard;
 import ch.hszt.connectfour.model.board.GameBoardColumn;
+import ch.hszt.connectfour.model.board.GameBoardSlot;
+import ch.hszt.connectfour.model.enumeration.DropColor;
+import ch.hszt.connectfour.model.enumeration.DropSequenceDirection;
 import ch.hszt.connectfour.model.enumeration.SkillLevel;
 
 /**
@@ -32,14 +35,64 @@ public final class EasyCpuPlayer extends CpuPlayer
 	 * @see ch.hszt.connectfour.model.game.CpuPlayer#determineNextTurn()
 	 */
 	@Override
-	public String determineNextTurn(GameBoard board)
+	public String determineNextTurn(Game game)
 	{
-		int rand = new Random().nextInt(7);
-		GameBoardColumn column = (GameBoardColumn)board.getColumns().get(rand);
+		if (GameAnalyzer.isOpeningTurn(game))
+		{
+			return GameAnalyzer.createOpeningTurn(game);
+		}
 		
-		return column.getKey();
+		GameBoard board = game.getBoard();
 		
-		// TODO: Implement logic for next turn determination
-//		return null;
+		DropColor own = getDropColor();
+		DropColor opponent = (own == DropColor.RED) ? DropColor.YELLOW : DropColor.RED;
+		
+		List<DropSequence> ownSequences = gatherOwnSequences(game);
+		List<DropSequence> opponentSequences = gatherOpponentSequences(game);
+		List<SingleDropSequence> singles = GameAnalyzer.getSingleSequences(board, own);
+		
+		DropSequence selection = null;
+		String turn = null;
+		
+		if (ownSequences.size() > 0)
+		{
+			selection = ownSequences.get(new Random().nextInt(ownSequences.size()));
+		}
+		else if (opponentSequences.size() > 0)
+		{
+			selection = opponentSequences.get(new Random().nextInt(opponentSequences.size()));
+		}
+		else if (singles.size() > 0)
+		{
+			selection = singles.get(new Random().nextInt(singles.size()));
+		}
+		
+		if (selection != null)
+		{
+			turn = selection.getTurn();
+		}
+		
+		if (turn == null)
+		{
+			turn = GameAnalyzer.findColumnWithEmptySlots(board);;
+		}
+		
+		return turn;
+	}
+
+	@Override
+	protected List<DropSequence> gatherOwnSequences(Game game)
+	{
+		DropSequenceDirection searchDirection = DropSequenceDirection.COLUMN;
+		return GameAnalyzer.getSequencesByDirection(game.getBoard(), getDropColor(), searchDirection);
+	}
+
+	@Override
+	protected List<DropSequence> gatherOpponentSequences(Game game)
+	{
+		DropColor opponentColor = (getDropColor() == DropColor.RED) ? DropColor.YELLOW : DropColor.RED;
+		
+		DropSequenceDirection searchDirection = DropSequenceDirection.COLUMN;
+		return GameAnalyzer.getSequencesByDirection(game.getBoard(), opponentColor, searchDirection);
 	}
 }

@@ -109,6 +109,157 @@ public class GameBoardSlot implements Comparable<GameBoardSlot>, Serial
 		return id;
 	}
 	
+	/*
+	 * -------------------------------------
+	 * NAVIGATION IN ALL DIRECTIONS
+	 * -------------------------------------
+	 */
+	
+	/**
+	 * Looks up for the {@link GameBoardSlot} to the right (i.e. in same {@link GameBoardRow}, but different {@link GameBoardColumn})
+	 * @return The {@link GameBoardSlot} to the right or <b>null</b>, if already on right edge of the {@link GameBoard}.
+	 */
+	public GameBoardSlot getRight()
+	{
+		GameBoardColumn rightColumn = column.getRight();
+		
+		// Search slot in same row index, but different column
+		
+		return (rightColumn == null) ? null : rightColumn.getSlot(id);
+	}
+	
+	/**
+	 * Looks up for the {@link GameBoardSlot} to the left (i.e. in same {@link GameBoardRow}, but different {@link GameBoardColumn})
+	 * @return The {@link GameBoardSlot} to the left or <b>null</b>, if already on left edge of the {@link GameBoard}.
+	 */
+	public GameBoardSlot getLeft()
+	{
+		GameBoardColumn leftColumn = column.getLeft();
+		
+		// Search slot in same row index, but different column
+		
+		return (leftColumn == null) ? null : leftColumn.getSlot(id);
+	}
+	
+	
+	/**
+	 * Looks up for the {@link GameBoardSlot} on the top of current (i.e in different {@link GameBoardRow}, but same {@link GameBoardColumn})
+	 * @return The {@link GameBoardSlot} on the top of current or <b>null</b>, if already on top edge of the {@link GameBoard}.
+	 */
+	public GameBoardSlot getTop()
+	{
+		// Search slot in higher row index
+		
+		return (id == GameBoard.NUMBER_OF_SLOTS) ? null : column.getSlot(id + 1);
+	}
+	
+	/**
+	 * Looks up for the {@link GameBoardSlot} on the bottom of current (i.e in different {@link GameBoardRow}, but same {@link GameBoardColumn})
+	 * @return The {@link GameBoardSlot} on the bottom of current or <b>null</b>, if already on bottom edge of the {@link GameBoard}.
+	 */
+	public GameBoardSlot getBottom()
+	{
+		// Search slot in lower row index
+		
+		return (id == 1) ? null : column.getSlot(id - 1);
+	}
+	
+	/**
+	 * Looks up for the {@link GameBoardSlot} in lower right of current (i.e. in different {@link GameBoardRow} and different {@link GameBoardColumn}).
+	 * @return The {@link GameBoardSlot} in lower right of current or <b>null</b>, if right or bottom edge of the GameBoard already reached.
+	 */
+	public GameBoardSlot getLowRight()
+	{
+		GameBoardColumn rightColumn = column.getRight();
+		
+		// Respect cases where no right column or bottom row
+		
+		if (rightColumn == null)
+		{
+			return null;
+		}
+		if (id == 1)
+		{
+			return null;
+		}
+		
+		// Search slot in right column and lower row index
+		
+		return rightColumn.getSlot(id - 1);
+	}
+	
+	/**
+	 * Looks up for the {@link GameBoardSlot} in upper right of current (i.e. in different {@link GameBoardRow} and different {@link GameBoardColumn}).
+	 * @return The {@link GameBoardSlot} in upper right of current or <b>null</b>, if right or top edge of the GameBoard already reached.
+	 */
+	public GameBoardSlot getUpRight()
+	{
+		GameBoardColumn rightColumn = column.getRight();
+		
+		// Respect cases where no right column or top row
+		
+		if (rightColumn == null)
+		{
+			return null;
+		}
+		if (id == GameBoard.NUMBER_OF_SLOTS)
+		{
+			return null;
+		}
+		
+		// Search slot in right column and higher row index
+		
+		return rightColumn.getSlot(id + 1);
+	}
+	
+	/**
+	 * Looks up for the {@link GameBoardSlot} in lower left of current (i.e. in different {@link GameBoardRow} and different {@link GameBoardColumn}).
+	 * @return The {@link GameBoardSlot} in lower left of current or <b>null</b>, if left or bottom edge of the GameBoard already reached.
+	 */
+	public GameBoardSlot getLowLeft()
+	{
+		GameBoardColumn leftColumn = column.getLeft();
+		
+		// Respect cases where no left column or bottom row
+		
+		if (leftColumn == null)
+		{
+			return null;
+		}
+		if (id == 1)
+		{
+			return null;
+		}
+		
+		// Search slot in left column and lower row index
+		
+		return leftColumn.getSlot(id - 1);
+	}
+	
+	/**
+	 * Looks up for the {@link GameBoardSlot} in upper left of current (i.e. in different {@link GameBoardRow} and different {@link GameBoardColumn}).
+	 * @return The {@link GameBoardSlot} in upper left of current or <b>null</b>, if left or top edge of the GameBoard already reached.
+	 */
+	public GameBoardSlot getUpLeft()
+	{
+		GameBoardColumn leftColumn = column.getLeft();
+		
+		// Respect cases where no left column or top row
+		
+		if (leftColumn == null)
+		{
+			return null;
+		}
+		if (id == GameBoard.NUMBER_OF_SLOTS)
+		{
+			return null;
+		}
+		
+		// Search slot in left column and higher row index
+		
+		return leftColumn.getSlot(id + 1);
+	}
+	
 	/**
 	 * Clears the content of current {@link GameBoardSlot}.
 	 */
@@ -119,7 +270,7 @@ public class GameBoardSlot implements Comparable<GameBoardSlot>, Serial
 			color = DropColor.UNKNOWN;
 			isEmpty = true;
 		}
-	}
+	}	
 
 	public void save(SerialObject obj)
 	{

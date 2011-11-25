@@ -39,7 +39,7 @@ public class GameBoardModelTest
 	}
 	
 	@org.junit.Test
-	public void testGameBoardInitalization()
+	public void testGameBoardInitialization()
 	{		
 		assertNotNull("GameBoard not intialized!", board);
 		
@@ -72,6 +72,113 @@ public class GameBoardModelTest
 				assertTrue("GameBoardSlot %s is not empty after initialization!", currentSlot.isEmpty()); 
 			}
 		}
+	}
+	
+	@org.junit.Test
+	public void testGameBoardNavigation()
+	{
+		GameBoardSlot upLeft = board.getColumnByKey("A").getSlot(6);
+		GameBoardSlot upRight = board.getColumnByKey("G").getSlot(6);
+		GameBoardSlot lowLeft = board.getColumnByKey("A").getSlot(1);
+		GameBoardSlot lowRight = board.getColumnByKey("G").getSlot(1);
+		
+		GameBoardSlot arbitrary = board.getColumnByKey("D").getSlot(4);
+		
+		// First verify positions
+		
+		assertEquals("Upper left GameBoardSlot isn't on position A6 on GameBoard!", "A6", upLeft.getKey());
+		assertEquals("Upper right GameBoardSlot isn't on position G6 on GameBoard!", "G6", upRight.getKey());
+		assertEquals("Lower left GameBoardSlot isn't on position A1 on GameBoard!", "A1", lowLeft.getKey());
+		assertEquals("Lower right GameBoardSlot isn't on position G6 on GameBoard!", "G1", lowRight.getKey());
+		
+		assertEquals("Arbitrary slot isn't on position D4 on GameBoard!", "D4", arbitrary.getKey());
+		
+		// Test navigation from upLeft
+		
+		assertNull("Upper left GameBoardSlot can't have up left neighbour!", upLeft.getUpLeft());
+		assertNull("Upper left GameBoardSlot can't have up right neighbour!", upLeft.getUpRight());
+		assertNull("Upper left GameBoardSlot can't have top neighbour!", upLeft.getTop());
+		assertNull("Upper left GameBoardSlot can't have left neighbour!", upLeft.getLeft());
+		assertNull("Upper left GameBoardSlot can't have low left neighbour!", upLeft.getLowLeft());
+		
+		assertNotNull("Upper left GameBoardSlot must have right neighbour!", upLeft.getRight());
+		assertEquals("Right neighbour of upper left doesn't lie at position B6 on GameBoard!", "B6", upLeft.getRight().getKey());
+		assertNotNull("Upper left GameBoardSlot must have low right neighbour!", upLeft.getLowRight());
+		assertEquals("Lower Right neighbour of upper left doesn't lie at position B5 on GameBoard!", "B5", upLeft.getLowRight().getKey());
+		assertNotNull("Upper left GameBoardSlot must have bottom neighbour!", upLeft.getBottom());
+		assertEquals("Bottom neighbour of upper left doesn't lie at position A5 on GameBoard!", "A5", upLeft.getBottom().getKey());
+		
+		// Test navigation from upRight
+		
+		assertNull("Upper right GameBoardSlot can't have up left neighbour!", upRight.getUpLeft());
+		assertNull("Upper right GameBoardSlot can't have up right neighbour!", upRight.getUpRight());
+		assertNull("Upper right GameBoardSlot can't have top neighbour!", upRight.getTop());
+		assertNull("Upper right GameBoardSlot can't have left neighbour!", upRight.getRight());
+		assertNull("Upper right GameBoardSlot can't have low left neighbour!", upRight.getLowRight());
+		
+		assertNotNull("Upper right GameBoardSlot must have left neighbour!", upRight.getLeft());
+		assertEquals("Left neighbour of upper right doesn't lie at position F6 on GameBoard!", "F6", upRight.getLeft().getKey());
+		assertNotNull("Upper right GameBoardSlot must have low left neighbour!", upRight.getLowLeft());
+		assertEquals("Left neighbour of upper right doesn't lie at position F5 on GameBoard!", "F5", upRight.getLowLeft().getKey());
+		assertNotNull("Upper right GameBoardSlot must have bottom neighbour!", upRight.getBottom());
+		assertEquals("Bottom neighbour of upper right doesn't lie at position G5 on GameBoard!", "G5", upRight.getBottom().getKey());
+		
+		// Test navigation from lowLeft
+		
+		assertNull("Lower left GameBoardSlot can't have up left neighbour!", lowLeft.getUpLeft());
+		assertNull("Lower left GameBoardSlot can't have low right neighbour!", lowLeft.getLowRight());
+		assertNull("Lower left GameBoardSlot can't have bottom neighbour!", lowLeft.getBottom());
+		assertNull("Lower left GameBoardSlot can't have left neighbour!", lowLeft.getLeft());
+		assertNull("Lower left GameBoardSlot can't have low left neighbour!", lowLeft.getLowLeft());
+		
+		assertNotNull("Lower left GameBoardSlot must have right neighbour!", lowLeft.getRight());
+		assertEquals("Right neighbour of lower left doesn't lie at position B1 on GameBoard!", "B1", lowLeft.getRight().getKey());
+		assertNotNull("Lower left GameBoardSlot must have up right neighbour!", lowLeft.getUpRight());
+		assertEquals("Upper right neighbour of lower left doesn't lie at position B2 on GameBoard!", "B2", lowLeft.getUpRight().getKey());
+		assertNotNull("Lower left GameBoardSlot must have top neighbour!", lowLeft.getTop());
+		assertEquals("Top neighbour of lower left doesn't lie at position A2 on GameBoard!", "A2", lowLeft.getTop().getKey());
+		
+		// Test navigation from lowRight
+		
+		assertNull("Lower left GameBoardSlot can't have up right neighbour!", lowRight.getUpRight());
+		assertNull("Lower left GameBoardSlot can't have low right neighbour!", lowRight.getLowRight());
+		assertNull("Lower left GameBoardSlot can't have bottom neighbour!", lowRight.getBottom());
+		assertNull("Lower left GameBoardSlot can't have right neighbour!", lowRight.getRight());
+		assertNull("Lower left GameBoardSlot can't have low left neighbour!", lowRight.getLowLeft());
+		
+		assertNotNull("Lower left GameBoardSlot must have left neighbour!", lowRight.getLeft());
+		assertEquals("Left neighbour of lower right doesn't lie at position F1 on GameBoard!", "F1", lowRight.getLeft().getKey());
+		assertNotNull("Lower left GameBoardSlot must have up left neighbour!", lowRight.getUpLeft());
+		assertEquals("Upper Left neighbour of lower right doesn't lie at position F2 on GameBoard!", "F2", lowRight.getUpLeft().getKey());
+		assertNotNull("Lower left GameBoardSlot must have top neighbour!", lowRight.getTop());
+		assertEquals("Top neighbour of lower right doesn't lie at position G2 on GameBoard!", "G2", lowRight.getTop().getKey());
+		
+		// Test navigation from arbitrary
+		
+		assertNotNull(String.format("Arbitrary %s must have up right neighbour!", arbitrary.toString()), arbitrary.getUpRight());
+		assertEquals(String.format("Upper right neighbour of arbitrary %s doesn't lie at position E5!", arbitrary.toString()),
+					"E5", arbitrary.getUpRight().getKey());
+		assertNotNull(String.format("Arbitrary %s must have low right neighbour!", arbitrary.toString()), arbitrary.getLowRight());
+		assertEquals(String.format("Lower right neighbour of arbitrary %s doesn't lie at position E3!", arbitrary.toString()),
+				"E3", arbitrary.getLowRight().getKey());
+		assertNotNull(String.format("Arbitrary %s must have bottom neighbour!", arbitrary.toString()), arbitrary.getBottom());
+		assertEquals(String.format("Bottom neighbour of arbitrary %s doesn't lie at position D3!", arbitrary.toString()),
+				"D3", arbitrary.getBottom().getKey());
+		assertNotNull(String.format("Arbitrary %s must have right neighbour!", arbitrary.toString()), arbitrary.getRight());
+		assertEquals(String.format("Right neighbour of arbitrary %s doesn't lie at position E4!", arbitrary.toString()),
+				"E4", arbitrary.getRight().getKey());
+		assertNotNull(String.format("Arbitrary %s must have low left neighbour!", arbitrary.toString()), arbitrary.getLowLeft());
+		assertEquals(String.format("Lower left neighbour of arbitrary %s doesn't lie at position C3!", arbitrary.toString()),
+				"C3", arbitrary.getLowLeft().getKey());
+		assertNotNull(String.format("Arbitrary %s must have left neighbour!", arbitrary.toString()), arbitrary.getLeft());
+		assertEquals(String.format("Left neighbour of arbitrary %s doesn't lie at position C4!", arbitrary.toString()),
+				"C4", arbitrary.getLeft().getKey());
+		assertNotNull(String.format("Arbitrary %s must have up left neighbour!", arbitrary.toString()), arbitrary.getUpLeft());
+		assertEquals(String.format("Upper left neighbour of arbitrary %s doesn't lie at position C5!", arbitrary.toString()),
+				"C5", arbitrary.getUpLeft().getKey());
+		assertNotNull(String.format("Arbitrary %s must have top neighbour!", arbitrary.toString()), arbitrary.getTop());
+		assertEquals(String.format("Top neighbour of arbitrary %s doesn't lie at position D5!", arbitrary.toString()),
+				"D5", arbitrary.getTop().getKey());
 	}
 	
 	@org.junit.Test

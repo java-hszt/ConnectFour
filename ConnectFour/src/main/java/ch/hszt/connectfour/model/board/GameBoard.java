@@ -181,7 +181,7 @@ public class GameBoard implements Serial
    	* @param id - The id of the {@link GameBoardColumn}.
    	* @return The associated {@link GameBoardColumn} or <b>NULL</b>, if no matching one found.
    	*/
-  	GameBoardColumn getColumnById(int id) 
+  	public GameBoardColumn getColumnById(int id) 
   	{
 		if (columnMap.containsKey(id))
 		{

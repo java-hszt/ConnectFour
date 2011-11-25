@@ -26,6 +26,7 @@ import ch.hszt.connectfour.model.board.GameBoardColumn;
 import ch.hszt.connectfour.model.enumeration.DialogResult;
 import ch.hszt.connectfour.model.game.CpuPlayer;
 import ch.hszt.connectfour.model.game.Game;
+import ch.hszt.connectfour.model.game.Player;
 import ch.hszt.connectfour.util.DateHelper;
 import ch.hszt.connectfour.util.GuiHelper;
 
@@ -278,17 +279,24 @@ public class MainGameFrame extends JDialog implements GameFrame
 		txtRedDrops.invalidate();
 	}
 	
-	public void updateIsCurrentCpuPlayer(boolean isCurrentCpuPlayer)
+	/**
+	 * Updates / notifies internally, whether current {@link Player} is a {@link CpuPlayer}.
+	 * @param isCurrentCpuPlayer - if <b>true</b>, the turn execution of the {@link CpuPlayer} is triggered in a separate thread;
+	 * otherwise, the GUI waits for any click in a {@link SlotPanel} to execute the next turn.
+	 */
+	public void notifyIsCurrentCpuPlayer(boolean isCurrentCpuPlayer)
 	{
 		this.isCurrentCpuPlayer = isCurrentCpuPlayer;
+		
+		// Enable / disable event handlers for slot panels according to current player
+		
 		updateSlotPanels(!isCurrentCpuPlayer);
 		
 		if (this.isCurrentCpuPlayer)
 		{
 			// Turn execution of CPU player to take place in separate thread
 			
-			CpuPlayerTurn turn = new CpuPlayerTurn();
-			Thread cpuPlayerThread = new Thread(turn, "CpuPlayerThread");
+			Thread cpuPlayerThread = new Thread(new CpuPlayerTurn(), "CpuPlayerThread");
 			cpuPlayerThread.start();
 		}
 	}
@@ -503,8 +511,8 @@ public class MainGameFrame extends JDialog implements GameFrame
 		final int gapX = SlotPanel.DIAMETER + horOffset;		// x offset of slot panels = panel diameter + customized offset
 		final int gapY = SlotPanel.DIAMETER + vertOffset;		// y offset of slot panels = panel diameter + customized offset
 		
-		int positionX = parent.getX() + xOrigin;				// Absolute x position relative to orgigin of parent container
-		int positionY = parent.getY() + yOrigin;				// Absolute y position relative to orgigin of parent container
+		int positionX = parent.getX() + xOrigin;				// Absolute x position relative to origin of parent container
+		int positionY = parent.getY() + yOrigin;				// Absolute y position relative to origin of parent container
 		
 		boolean rowLabelsCreated = false;						// Helper flag, to create row labels only once
 		
@@ -771,7 +779,7 @@ public class MainGameFrame extends JDialog implements GameFrame
 				// Let the CPU player decide, which column to insert the drop into
 				
 				Game game = getGame();
-				String column = player.determineNextTurn(game.getBoard());
+				String column = player.determineNextTurn(game);
 
 				// Finally execute the turn
 				
@@ -780,7 +788,8 @@ public class MainGameFrame extends JDialog implements GameFrame
 			catch (GameException ex)
 			{
 				// TODO Auto-generated catch block
-				ex.printStackTrace();
+				controller.printMessage("Last turn couldn't be executed! Reason: " + ex.getMessage());
+				notifyIsCurrentCpuPlayer(isCurrentCpuPlayer);
 			}
 			catch (InterruptedException ex)
 			{

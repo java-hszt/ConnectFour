@@ -66,7 +66,7 @@ public abstract class GameBoardSlotCollection implements Iterable<GameBoardSlot>
 	}
 	
 	/**
-	 * Determines, if the current {@link GameBoardSlotCollection} provides "Four in a Row" of specified {@link DropColor}
+	 * Determines, if the current {@link GameBoardSlotCollection} provides "ConnectFour" of specified {@link DropColor}
 	 * @param color -The {@link DropColor} to evaluate.
 	 * @return <b>true</b>, if this instance provides four {@link GameBoardSlot} with the specified {@link DropColor} in a row.
 	 */

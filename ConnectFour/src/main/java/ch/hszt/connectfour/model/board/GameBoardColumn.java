@@ -190,7 +190,7 @@ public class GameBoardColumn extends GameBoardLine
 	 * Evaluates, if this {@link GameBoardColumn} has empty slots.
 	 * @return <b>true</b>, if this instance contains empty slots; otherwise <b>false</b>.
 	 */
-	private boolean hasEmptySlots() 
+	public boolean hasEmptySlots() 
 	{
 		for (int i = 1; i <= slots.length; i++)
 		{
